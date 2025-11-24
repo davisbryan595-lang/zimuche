@@ -265,9 +265,9 @@ export default function Home() {
         </section>
 
         {/* ABOUT SECTION */}
-        <section id="about" className="relative py-24 px-4 bg-gradient-to-b from-purple-50/30 to-transparent">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <section id="about" className="relative py-16 sm:py-20 md:py-24 px-4 sm:px-6 md:px-8 bg-gradient-to-b from-purple-50/30 to-transparent">
+          <div className="max-w-6xl mx-auto w-full">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 md:gap-12 items-center">
               {/* Image Section */}
               <div className="fade-in-up order-2 lg:order-1">
                 <div className="relative rounded-3xl overflow-hidden shadow-2xl h-80 md:h-[450px]">
@@ -283,12 +283,12 @@ export default function Home() {
 
               {/* Content Section */}
               <div className="fade-in-up order-1 lg:order-2">
-                <h2 className="font-sans text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-6">
+                <h2 className="font-sans text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-6">
                   About Dr. Mariagorety Nwiloh, DNP
                 </h2>
 
                 {/* Credentials Badges */}
-                <div className="flex flex-wrap gap-3 mb-8">
+                <div className="flex flex-col sm:flex-row flex-wrap gap-3 mb-8">
                   <div className="inline-flex items-center gap-2 bg-purple-100/80 backdrop-blur-sm border border-purple-200/50 rounded-full px-4 py-2">
                     <span className="text-lg">📚</span>
                     <div>
@@ -305,15 +305,15 @@ export default function Home() {
                   </div>
                 </div>
 
-                <p className="text-slate-700 font-sans text-lg leading-relaxed mb-6">
+                <p className="text-slate-700 font-sans text-base sm:text-lg leading-relaxed mb-6">
                   With over 15 years of experience in psychiatric nursing and mental health care, Dr. Gorety brings compassion, expertise, and evidence-based treatment to every patient interaction.
                 </p>
 
-                <p className="text-slate-700 font-sans text-lg leading-relaxed mb-8">
+                <p className="text-slate-700 font-sans text-base sm:text-lg leading-relaxed mb-8">
                   As a board-certified Psychiatric Mental Health Nurse Practitioner, she specializes in medication management, individual therapy, and creating personalized treatment plans that honor your unique needs.
                 </p>
 
-                <p className="text-xl italic text-purple-600 font-sans mb-8">
+                <p className="text-lg sm:text-xl italic text-purple-600 font-sans mb-8">
                   "Healing starts with being truly heard and understood."
                 </p>
 
