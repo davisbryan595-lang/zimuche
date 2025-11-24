@@ -136,67 +136,67 @@ export default function Home() {
 
       <main className="relative">
         {/* HERO SECTION */}
-        <section id="hero" className="relative min-h-screen flex flex-col items-center justify-center px-4 py-20 pt-32">
+        <section id="hero" className="relative min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 md:px-8 py-16 sm:py-20 md:py-32 pt-28 sm:pt-32">
           {/* Board Certified Badge */}
-          <div className="mb-6 inline-flex items-center gap-2 bg-purple-100/60 backdrop-blur-sm border border-purple-200/50 rounded-full px-4 py-2 animate-fade-in-down">
+          <div className="mb-6 inline-flex items-center gap-2 bg-purple-100/60 backdrop-blur-sm border border-purple-200/50 rounded-full px-3 sm:px-4 py-2 animate-fade-in-down text-xs sm:text-sm">
             <span className="text-purple-600">🏆</span>
-            <span className="text-sm font-medium text-purple-700">Board Certified Professional</span>
+            <span className="font-medium text-purple-700">Board Certified Professional</span>
           </div>
 
           {/* Main Heading with Gradient */}
-          <h1 className="font-sans text-5xl md:text-7xl font-bold text-center mb-4 bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent animate-fade-in-up">
+          <h1 className="font-sans text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-3 sm:mb-4 bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent animate-fade-in-up leading-tight">
             Zimuche
           </h1>
 
           {/* Subheading */}
-          <p className="text-2xl md:text-3xl text-center mb-6 text-purple-600 font-medium animate-fade-in-up">
+          <p className="text-xl sm:text-2xl md:text-3xl text-center mb-6 text-purple-600 font-medium animate-fade-in-up">
             Health Harmony
           </p>
 
           {/* Welcome Card */}
-          <div className="max-w-2xl mx-auto mb-12 bg-gradient-to-br from-purple-50/80 via-purple-100/40 to-purple-50/60 backdrop-blur-sm rounded-3xl border border-purple-200/50 p-8 md:p-10 shadow-2xl animate-fade-in-up">
-            <div className="flex items-start gap-3 mb-4">
-              <span className="text-2xl">✨</span>
-              <p className="text-slate-700 font-sans leading-relaxed">
+          <div className="w-full max-w-2xl mx-auto mb-10 sm:mb-12 bg-gradient-to-br from-purple-50/80 via-purple-100/40 to-purple-50/60 backdrop-blur-sm rounded-2xl sm:rounded-3xl border border-purple-200/50 p-6 sm:p-8 md:p-10 shadow-2xl animate-fade-in-up">
+            <div className="flex items-start gap-2 sm:gap-3 mb-4">
+              <span className="text-xl sm:text-2xl flex-shrink-0">✨</span>
+              <p className="text-sm sm:text-base text-slate-700 font-sans leading-relaxed">
                 Welcome to your digital front door to healing and hope. As your trusted psychiatric mental health partner, I provide compassionate, evidence-based care that honors your unique journey. With board certification and specialized expertise, I'm here to help you navigate life's challenges with personalized treatment plans that blend medication management and psychotherapy—because your mental health deserves expert, caring attention.
               </p>
             </div>
-            
-            <div className="flex flex-col sm:flex-row gap-6 pt-4">
-              <div className="text-center sm:text-left">
-                <p className="text-3xl font-bold text-purple-600">15+</p>
-                <p className="text-sm text-slate-600 font-medium">Years Experience</p>
+
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 pt-4">
+              <div className="text-center sm:text-left flex-1">
+                <p className="text-2xl sm:text-3xl font-bold text-purple-600">15+</p>
+                <p className="text-xs sm:text-sm text-slate-600 font-medium">Years Experience</p>
               </div>
-              <div className="h-0.5 sm:h-auto sm:w-0.5 bg-purple-200 sm:bg-purple-200" />
-              <div className="text-center sm:text-left">
-                <p className="text-3xl font-bold text-purple-600">500+</p>
-                <p className="text-sm text-slate-600 font-medium">Lives Transformed</p>
+              <div className="h-0.5 sm:h-auto sm:w-0.5 bg-purple-200" />
+              <div className="text-center sm:text-left flex-1">
+                <p className="text-2xl sm:text-3xl font-bold text-purple-600">500+</p>
+                <p className="text-xs sm:text-sm text-slate-600 font-medium">Lives Transformed</p>
               </div>
-              <div className="h-0.5 sm:h-auto sm:w-0.5 bg-purple-200 sm:bg-purple-200" />
-              <div className="text-center sm:text-left">
-                <p className="text-3xl font-bold text-purple-600">DNP</p>
-                <p className="text-sm text-slate-600 font-medium">Board Certified</p>
+              <div className="h-0.5 sm:h-auto sm:w-0.5 bg-purple-200" />
+              <div className="text-center sm:text-left flex-1">
+                <p className="text-2xl sm:text-3xl font-bold text-purple-600">DNP</p>
+                <p className="text-xs sm:text-sm text-slate-600 font-medium">Board Certified</p>
               </div>
             </div>
           </div>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 mb-8 animate-fade-in-up">
-            <a href="#contact" className="hero-btn">
+          <div className="w-full flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8 animate-fade-in-up justify-center px-4 sm:px-0">
+            <a href="#contact" className="hero-btn text-sm sm:text-base whitespace-nowrap">
               <span>Begin Your Journey</span>
               <span>→</span>
             </a>
-            <a href="#services" className="hero-btn-secondary">
+            <a href="#services" className="hero-btn-secondary text-sm sm:text-base whitespace-nowrap">
               Learn More
             </a>
           </div>
 
           {/* Quick Contact */}
           <div className="text-center animate-fade-in-up">
-            <p className="text-slate-600 text-sm font-medium mb-3">Ready to talk?</p>
+            <p className="text-slate-600 text-xs sm:text-sm font-medium mb-2 sm:mb-3">Ready to talk?</p>
             <a
               href="tel:817-966-3989"
-              className="text-purple-600 font-bold hover:text-purple-700 transition-colors text-lg"
+              className="text-purple-600 font-bold hover:text-purple-700 transition-colors text-base sm:text-lg"
             >
               📞 Call 817-966-3989
             </a>
