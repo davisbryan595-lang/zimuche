@@ -374,6 +374,36 @@ export default function Home() {
           </div>
         </section>
 
+        {/* WELLNESS MEDIA SECTION */}
+        <section className="relative py-24 px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
+              <div className="fade-in-up">
+                <div className="relative rounded-3xl overflow-hidden shadow-2xl h-80 md:h-96">
+                  <Image
+                    src="https://images.pexels.com/photos/4498278/pexels-photo-4498278.jpeg"
+                    alt="Meditation and mindfulness wellness practices"
+                    fill
+                    className="object-cover hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+              </div>
+
+              <div className="fade-in-up">
+                <h2 className="font-sans text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-6">
+                  Wellness & Mindfulness
+                </h2>
+                <p className="text-slate-600 font-sans text-lg leading-relaxed mb-4">
+                  Discover the power of mindfulness and wellness practices integrated into your treatment plan. We believe in a holistic approach to mental health that addresses mind, body, and spirit.
+                </p>
+                <p className="text-slate-600 font-sans text-lg leading-relaxed">
+                  From meditation techniques to stress management strategies, we empower you with tools for lasting peace and emotional resilience.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* TESTIMONIALS SECTION */}
         <section className="relative py-24 px-4 bg-gradient-to-b from-purple-50/30 to-transparent">
           <div className="max-w-6xl mx-auto">
