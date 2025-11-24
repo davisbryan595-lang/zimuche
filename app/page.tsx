@@ -1,215 +1,108 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
 import Image from "next/image"
 import Navigation from "@/components/navigation"
 import Footer from "@/components/footer"
 
-interface Particle {
-  id: number
-  x: number
-  y: number
-  size: number
-  vx: number
-  vy: number
-  opacity: number
-}
-
 export default function Home() {
-  const [isLoading, setIsLoading] = useState(true)
-  const [particles, setParticles] = useState<Particle[]>([])
-  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 })
-  const containerRef = useRef<HTMLDivElement>(null)
-
-  // Initialize particles
-  useEffect(() => {
-    const newParticles: Particle[] = Array.from({ length: 25 }).map((_, i) => ({
-      id: i,
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
-      size: Math.random() * 60 + 20, // Small particles: 20-80px
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3,
-      opacity: Math.random() * 0.4 + 0.15,
-    }))
-    setParticles(newParticles)
-    setIsLoading(false)
-  }, [])
-
-  // Animate particles
-  useEffect(() => {
-    const animationInterval = setInterval(() => {
-      setParticles((prev) =>
-        prev.map((particle) => {
-          let newX = particle.x + particle.vx
-          let newY = particle.y + particle.vy
-          let newVx = particle.vx
-          let newVy = particle.vy
-
-          // Bounce off edges
-          if (newX < 0 || newX > window.innerWidth) {
-            newVx = -newVx
-            newX = Math.max(0, Math.min(window.innerWidth, newX))
-          }
-          if (newY < 0 || newY > window.innerHeight) {
-            newVy = -newVy
-            newY = Math.max(0, Math.min(window.innerHeight, newY))
-          }
-
-          return { ...particle, x: newX, y: newY, vx: newVx, vy: newVy }
-        })
-      )
-    }, 40)
-
-    return () => clearInterval(animationInterval)
-  }, [])
-
-  // Track cursor movement
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setCursorPos({ x: e.clientX, y: e.clientY })
-    }
-
-    window.addEventListener("mousemove", handleMouseMove)
-    return () => window.removeEventListener("mousemove", handleMouseMove)
-  }, [])
-
   return (
     <>
       <Navigation />
 
-      {/* Animated Background with Decorative Blobs */}
-      <div ref={containerRef} className="fixed inset-0 -z-10 overflow-hidden bg-white">
-        {/* Large decorative gradient blob - top right */}
-        <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-gradient-to-br from-purple-100 via-purple-50 to-transparent opacity-60 blur-3xl" />
-        {/* Medium decorative gradient blob - bottom left */}
-        <div className="absolute -bottom-32 -left-32 w-80 h-80 rounded-full bg-gradient-to-tr from-purple-100 via-transparent to-purple-50 opacity-50 blur-3xl" />
-        {/* Small accent blob - middle */}
-        <div className="absolute top-1/2 right-1/4 w-64 h-64 rounded-full bg-gradient-to-br from-purple-50 to-transparent opacity-40 blur-3xl" />
-
-        {/* Floating Particles - Small and Visible */}
-        {particles.map((particle) => (
-          <div
-            key={particle.id}
-            className="absolute rounded-full pointer-events-none"
-            style={{
-              left: `${particle.x}px`,
-              top: `${particle.y}px`,
-              width: `${particle.size}px`,
-              height: `${particle.size}px`,
-              background: `radial-gradient(circle, rgba(168, 85, 247, ${particle.opacity}) 0%, rgba(147, 51, 234, ${particle.opacity * 0.6}) 50%, transparent 70%)`,
-              filter: "blur(8px)",
-              transform: "translate(-50%, -50%)",
-            }}
-          />
-        ))}
-
-        {/* Cursor-Following Blur */}
-        <div
-          className="fixed rounded-full bg-gradient-to-br from-purple-400/60 via-purple-300/40 to-transparent opacity-100 blur-3xl pointer-events-none"
-          style={{
-            width: "300px",
-            height: "300px",
-            left: `${cursorPos.x}px`,
-            top: `${cursorPos.y}px`,
-            transform: "translate(-50%, -50%)",
-            transition: "all 0.1s ease-out",
-            zIndex: 0,
-          }}
-        />
+      {/* Subtle Background Gradient */}
+      <div className="fixed inset-0 -z-10 bg-gradient-to-b from-white via-purple-50/30 to-white" />
+      <div className="fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute -top-96 -right-96 w-screen h-screen rounded-full bg-purple-100/20 blur-3xl" />
+        <div className="absolute -bottom-96 -left-96 w-screen h-screen rounded-full bg-purple-100/15 blur-3xl" />
       </div>
-
-      {/* Loading State */}
-      {isLoading && (
-        <div className="fixed inset-0 flex items-center justify-center bg-white z-50">
-          <div className="text-center">
-            <div className="mb-4 inline-block animate-spin">
-              <svg className="w-12 h-12 text-purple-600" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-              </svg>
-            </div>
-            <p className="text-slate-700 font-sans">Opening the path to peace...</p>
-          </div>
-        </div>
-      )}
 
       <main className="relative">
         {/* HERO SECTION */}
-        <section id="hero" className="relative min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 md:px-8 py-16 sm:py-20 md:py-32 pt-28 sm:pt-32">
-          {/* Board Certified Badge */}
-          <div className="mb-6 inline-flex items-center gap-2 bg-purple-100/60 backdrop-blur-sm border border-purple-200/50 rounded-full px-3 sm:px-4 py-2 animate-fade-in-down text-xs sm:text-sm">
-            <span className="text-purple-600">🏆</span>
-            <span className="font-medium text-purple-700">Board Certified Professional</span>
-          </div>
-
-          {/* Main Heading with Gradient */}
-          <h1 className="font-sans text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-3 sm:mb-4 bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent animate-fade-in-up leading-tight">
-            Zimuche
-          </h1>
-
-          {/* Subheading */}
-          <p className="text-xl sm:text-2xl md:text-3xl text-center mb-6 text-purple-600 font-medium animate-fade-in-up">
-            Health Harmony
-          </p>
-
-          {/* Welcome Card */}
-          <div className="w-full max-w-2xl mx-auto mb-10 sm:mb-12 bg-gradient-to-br from-purple-50/80 via-purple-100/40 to-purple-50/60 backdrop-blur-sm rounded-2xl sm:rounded-3xl border border-purple-200/50 p-6 sm:p-8 md:p-10 shadow-2xl animate-fade-in-up">
-            <div className="flex items-start gap-2 sm:gap-3 mb-4">
-              <span className="text-xl sm:text-2xl flex-shrink-0">✨</span>
-              <p className="text-sm sm:text-base text-slate-700 font-sans leading-relaxed">
-                Welcome to your digital front door to healing and hope. As your trusted psychiatric mental health partner, I provide compassionate, evidence-based care that honors your unique journey. With board certification and specialized expertise, I'm here to help you navigate life's challenges with personalized treatment plans that blend medication management and psychotherapy—because your mental health deserves expert, caring attention.
-              </p>
+        <section id="hero" className="relative pt-32 pb-20 px-4 sm:px-6 md:px-8">
+          <div className="max-w-5xl mx-auto text-center">
+            {/* Certification Badge */}
+            <div className="mb-8 inline-flex items-center gap-2 bg-white border border-purple-200 rounded-full px-4 py-2 shadow-sm hover:shadow-md transition-shadow">
+              <span className="text-purple-600">🏆</span>
+              <span className="text-sm font-semibold text-purple-700">Board Certified Professional</span>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 pt-4">
-              <div className="text-center sm:text-left flex-1">
-                <p className="text-2xl sm:text-3xl font-bold text-purple-600">15+</p>
-                <p className="text-xs sm:text-sm text-slate-600 font-medium">Years Experience</p>
-              </div>
-              <div className="h-0.5 sm:h-auto sm:w-0.5 bg-purple-200" />
-              <div className="text-center sm:text-left flex-1">
-                <p className="text-2xl sm:text-3xl font-bold text-purple-600">500+</p>
-                <p className="text-xs sm:text-sm text-slate-600 font-medium">Lives Transformed</p>
-              </div>
-              <div className="h-0.5 sm:h-auto sm:w-0.5 bg-purple-200" />
-              <div className="text-center sm:text-left flex-1">
-                <p className="text-2xl sm:text-3xl font-bold text-purple-600">DNP</p>
-                <p className="text-xs sm:text-sm text-slate-600 font-medium">Board Certified</p>
+            {/* Main Heading */}
+            <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-purple-700 mb-4 leading-tight">
+              Zimuche
+            </h1>
+
+            {/* Tagline */}
+            <p className="text-2xl sm:text-3xl text-purple-600 font-semibold mb-12">
+              Health Harmony
+            </p>
+
+            {/* Value Proposition */}
+            <div className="max-w-3xl mx-auto mb-12">
+              <div className="bg-white rounded-2xl border border-purple-200/50 p-8 sm:p-10 shadow-sm">
+                <p className="text-lg text-slate-700 leading-relaxed mb-10">
+                  Welcome to your digital front door to healing and hope. As your trusted psychiatric mental health partner, I provide compassionate, evidence-based care that honors your unique journey. With board certification and specialized expertise, I'm here to help you navigate life's challenges with personalized treatment plans that blend medication management and psychotherapy—because your mental health deserves expert, caring attention.
+                </p>
+
+                {/* Key Metrics */}
+                <div className="grid grid-cols-3 gap-6 border-t border-purple-100 pt-8">
+                  <div>
+                    <p className="text-3xl font-bold text-purple-700">15+</p>
+                    <p className="text-sm text-slate-600 font-medium mt-1">Years Experience</p>
+                  </div>
+                  <div>
+                    <p className="text-3xl font-bold text-purple-700">500+</p>
+                    <p className="text-sm text-slate-600 font-medium mt-1">Lives Transformed</p>
+                  </div>
+                  <div>
+                    <p className="text-3xl font-bold text-purple-700">DNP</p>
+                    <p className="text-sm text-slate-600 font-medium mt-1">Board Certified</p>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* CTA Buttons */}
-          <div className="w-full flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8 animate-fade-in-up justify-center px-4 sm:px-0">
-            <a href="#contact" className="hero-btn text-sm sm:text-base whitespace-nowrap">
-              <span>Begin Your Journey</span>
-              <span>→</span>
-            </a>
-            <a href="#services" className="hero-btn-secondary text-sm sm:text-base whitespace-nowrap">
-              Learn More
-            </a>
-          </div>
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+              <a href="#contact" className="hero-btn text-base">
+                <span>Begin Your Journey</span>
+                <span>→</span>
+              </a>
+              <a href="#services" className="hero-btn-secondary text-base">
+                Learn More
+              </a>
+            </div>
 
-          {/* Quick Contact */}
-          <div className="text-center animate-fade-in-up">
-            <p className="text-slate-600 text-xs sm:text-sm font-medium mb-2 sm:mb-3">Ready to talk?</p>
-            <a
-              href="tel:817-966-3989"
-              className="text-purple-600 font-bold hover:text-purple-700 transition-colors text-base sm:text-lg"
-            >
-              📞 Call 817-966-3989
-            </a>
+            {/* Quick Contact */}
+            <div className="text-center">
+              <p className="text-slate-600 text-sm font-medium mb-3">Ready to talk?</p>
+              <a
+                href="tel:817-966-3989"
+                className="text-purple-700 font-bold hover:text-purple-600 transition-colors text-lg inline-flex items-center gap-2"
+              >
+                📞 Call 817-966-3989
+              </a>
+            </div>
           </div>
         </section>
 
         {/* SERVICES SECTION */}
-        <section id="services" className="relative py-16 sm:py-20 md:py-24 px-4 sm:px-6 md:px-8">
-          <div className="max-w-6xl mx-auto w-full">
-            {/* Services Header with Image */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 md:gap-12 items-center mb-12 sm:mb-16">
-              <div className="fade-in-up order-2 lg:order-1">
-                <div className="relative rounded-3xl overflow-hidden shadow-2xl h-80 md:h-96">
+        <section id="services" className="relative py-20 px-4 sm:px-6 md:px-8 bg-gradient-to-b from-purple-50/40 to-white">
+          <div className="max-w-6xl mx-auto">
+            {/* Section Header */}
+            <div className="mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold text-purple-700 mb-4 max-w-3xl">
+                Comprehensive Mental Health Services
+              </h2>
+              <p className="text-lg text-slate-600">
+                Expert care tailored to your unique needs with professional expertise and compassionate approach
+              </p>
+            </div>
+
+            {/* Services Grid with Image */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+              {/* Image Column */}
+              <div className="lg:col-span-1">
+                <div className="relative rounded-2xl overflow-hidden shadow-md h-80 md:h-full min-h-80">
                   <Image
                     src="https://images.pexels.com/photos/5407206/pexels-photo-5407206.jpeg"
                     alt="Professional therapy and counseling services"
@@ -219,45 +112,37 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="fade-in-up order-1 lg:order-2">
-                <h2 className="font-sans text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-4">
-                  Comprehensive Mental Health Services
-                </h2>
-                <p className="text-slate-600 font-sans max-w-2xl text-lg">
-                  Expert care tailored to your unique needs with professional expertise and compassionate approach
-                </p>
+              {/* Service Cards */}
+              <div className="lg:col-span-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 h-full">
+                  {[
+                    { title: "Psychiatric Evaluation", description: "Thorough assessment and diagnosis", icon: "🧠" },
+                    { title: "Medication Management", description: "Expert prescription monitoring", icon: "💊" },
+                    { title: "Individual Therapy", description: "One-on-one counseling sessions", icon: "💬" },
+                    { title: "Couples & Family Sessions", description: "Strengthen relationships", icon: "👥" },
+                    { title: "Telehealth Care", description: "Convenient virtual appointments", icon: "📱" },
+                    { title: "Wellness Workshops", description: "Group sessions on coping strategies", icon: "🌸" },
+                  ].map((service, idx) => (
+                    <div
+                      key={idx}
+                      className="bg-white rounded-xl border border-purple-200/40 p-6 hover:border-purple-300 hover:shadow-md transition-all duration-300"
+                    >
+                      <div className="text-3xl mb-3">{service.icon}</div>
+                      <h3 className="font-bold text-purple-700 mb-2">{service.title}</h3>
+                      <p className="text-sm text-slate-600">{service.description}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
-              {[
-                { title: "Psychiatric Evaluation", description: "Thorough assessment and diagnosis", icon: "🧠" },
-                { title: "Medication Management", description: "Expert prescription monitoring", icon: "💊" },
-                { title: "Individual Therapy", description: "One-on-one counseling sessions", icon: "💬" },
-                { title: "Couples & Family Sessions", description: "Strengthen relationships", icon: "👥" },
-                { title: "Telehealth Care", description: "Convenient virtual appointments", icon: "📱" },
-                { title: "Wellness Workshops", description: "Group sessions on coping strategies", icon: "🌸" },
-              ].map((service, idx) => (
-                <div
-                  key={idx}
-                  className="group service-card bg-gradient-to-br from-purple-50/80 to-purple-100/80 backdrop-blur-sm rounded-3xl p-8 border border-purple-200/50 hover:border-purple-300 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 fade-in-up"
-                  style={{ animationDelay: `${idx * 0.1}s` }}
-                >
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-400/30 to-purple-600/30 mb-4 group-hover:scale-110 transition-transform">
-                    <span className="text-3xl">{service.icon}</span>
-                  </div>
-                  <h3 className="font-sans text-xl font-bold text-purple-600 mb-2">{service.title}</h3>
-                  <p className="text-slate-600 font-sans text-sm leading-relaxed">{service.description}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mt-10 sm:mt-12">
-              <a href="#contact" className="hero-btn text-sm sm:text-base">
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-start">
+              <a href="#contact" className="hero-btn text-base">
                 <span>Schedule a Service</span>
                 <span>→</span>
               </a>
-              <a href="#about" className="hero-btn-secondary text-sm sm:text-base">
+              <a href="#about" className="hero-btn-secondary text-base">
                 Learn More About Dr. Gorety
               </a>
             </div>
@@ -265,13 +150,13 @@ export default function Home() {
         </section>
 
         {/* ABOUT SECTION */}
-        <section id="about" className="relative py-16 sm:py-20 md:py-24 px-4 sm:px-6 md:px-8 bg-gradient-to-b from-purple-50/30 to-transparent">
-          <div className="max-w-6xl mx-auto w-full">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 md:gap-12 items-center">
-              {/* Image Section */}
-              <div className="fade-in-up order-2 lg:order-1">
-                <div className="relative rounded-3xl overflow-hidden shadow-2xl h-80 md:h-[450px]">
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-400/20 to-purple-600/20 z-10" />
+        <section id="about" className="relative py-20 px-4 sm:px-6 md:px-8">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              {/* Image */}
+              <div className="order-2 lg:order-1">
+                <div className="relative rounded-2xl overflow-hidden shadow-md h-96 md:h-[500px]">
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-600/10 to-purple-800/10 z-10" />
                   <Image
                     src="https://cdn.builder.io/api/v1/image/assets%2Fc70ebb3e5225486399c19406cd27bb43%2F8d9fe4b88ac049fb93fd853a5db6c03c?format=webp&width=800"
                     alt="Dr. Mariagorety Nwiloh - Psychiatric Nurse Practitioner"
@@ -281,43 +166,43 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Content Section */}
-              <div className="fade-in-up order-1 lg:order-2">
-                <h2 className="font-sans text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-6">
+              {/* Content */}
+              <div className="order-1 lg:order-2">
+                <h2 className="text-4xl md:text-5xl font-bold text-purple-700 mb-8">
                   About Dr. Mariagorety Nwiloh, DNP
                 </h2>
 
-                {/* Credentials Badges */}
-                <div className="flex flex-col sm:flex-row flex-wrap gap-3 mb-8">
-                  <div className="inline-flex items-center gap-2 bg-purple-100/80 backdrop-blur-sm border border-purple-200/50 rounded-full px-4 py-2">
-                    <span className="text-lg">📚</span>
+                {/* Credentials */}
+                <div className="flex flex-col sm:flex-row gap-4 mb-8">
+                  <div className="flex items-center gap-3 bg-purple-50 border border-purple-200 rounded-lg px-4 py-3">
+                    <span className="text-2xl">📚</span>
                     <div>
-                      <p className="text-xs font-semibold text-purple-700">DNP</p>
+                      <p className="text-xs font-bold text-purple-700">DNP</p>
                       <p className="text-xs text-purple-600">Doctor of Nursing Practice</p>
                     </div>
                   </div>
-                  <div className="inline-flex items-center gap-2 bg-purple-100/80 backdrop-blur-sm border border-purple-200/50 rounded-full px-4 py-2">
-                    <span className="text-lg">✓</span>
+                  <div className="flex items-center gap-3 bg-purple-50 border border-purple-200 rounded-lg px-4 py-3">
+                    <span className="text-2xl">✓</span>
                     <div>
-                      <p className="text-xs font-semibold text-purple-700">PMHNP-BC</p>
+                      <p className="text-xs font-bold text-purple-700">PMHNP-BC</p>
                       <p className="text-xs text-purple-600">Board Certified</p>
                     </div>
                   </div>
                 </div>
 
-                <p className="text-slate-700 font-sans text-base sm:text-lg leading-relaxed mb-6">
+                <p className="text-lg text-slate-700 leading-relaxed mb-6">
                   With over 15 years of experience in psychiatric nursing and mental health care, Dr. Gorety brings compassion, expertise, and evidence-based treatment to every patient interaction.
                 </p>
 
-                <p className="text-slate-700 font-sans text-base sm:text-lg leading-relaxed mb-8">
+                <p className="text-lg text-slate-700 leading-relaxed mb-8">
                   As a board-certified Psychiatric Mental Health Nurse Practitioner, she specializes in medication management, individual therapy, and creating personalized treatment plans that honor your unique needs.
                 </p>
 
-                <p className="text-lg sm:text-xl italic text-purple-600 font-sans mb-8">
+                <p className="text-lg italic text-purple-700 font-medium mb-8 py-4 border-l-4 border-purple-300 pl-4">
                   "Healing starts with being truly heard and understood."
                 </p>
 
-                <a href="#contact" className="hero-btn">
+                <a href="#contact" className="hero-btn inline-flex">
                   <span>Schedule Your Session</span>
                   <span>→</span>
                 </a>
@@ -326,19 +211,19 @@ export default function Home() {
           </div>
         </section>
 
-        {/* TREATMENT AREAS SECTION */}
-        <section className="relative py-16 sm:py-20 md:py-24 px-4 sm:px-6 md:px-8">
-          <div className="max-w-6xl mx-auto w-full">
-            <div className="text-center mb-12 sm:mb-16">
-              <h2 className="font-sans text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-4">
+        {/* SPECIALIZATION SECTION */}
+        <section className="relative py-20 px-4 sm:px-6 md:px-8 bg-gradient-to-b from-purple-50/40 to-white">
+          <div className="max-w-6xl mx-auto">
+            <div className="mb-12">
+              <h2 className="text-4xl md:text-5xl font-bold text-purple-700 mb-4">
                 Areas of Specialization
               </h2>
-              <p className="text-slate-600 font-sans max-w-2xl mx-auto text-base sm:text-lg">
+              <p className="text-lg text-slate-600">
                 Expertise in treating a wide range of mental health concerns
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {[
                 { title: "Anxiety Disorders", icon: "⚡" },
                 { title: "Depression Management", icon: "☁️" },
@@ -352,23 +237,22 @@ export default function Home() {
               ].map((area, idx) => (
                 <div
                   key={idx}
-                  className="bg-gradient-to-br from-purple-50/80 to-purple-100/80 backdrop-blur-sm rounded-2xl p-6 border border-purple-200/50 hover:border-purple-300 hover:shadow-lg transition-all duration-300 fade-in-up"
-                  style={{ animationDelay: `${idx * 0.08}s` }}
+                  className="bg-white rounded-xl border border-purple-200/40 p-6 hover:border-purple-300 hover:shadow-md transition-all duration-300"
                 >
-                  <div className="text-4xl mb-3">{area.icon}</div>
-                  <h3 className="font-sans font-bold text-purple-700">{area.title}</h3>
+                  <div className="text-3xl mb-3">{area.icon}</div>
+                  <h3 className="font-bold text-purple-700">{area.title}</h3>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* WELLNESS MEDIA SECTION */}
-        <section className="relative py-16 sm:py-20 md:py-24 px-4 sm:px-6 md:px-8">
-          <div className="max-w-6xl mx-auto w-full">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 md:gap-12 items-center mb-16 sm:mb-20">
-              <div className="fade-in-up">
-                <div className="relative rounded-3xl overflow-hidden shadow-2xl h-80 md:h-96">
+        {/* WELLNESS SECTION */}
+        <section className="relative py-20 px-4 sm:px-6 md:px-8">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div>
+                <div className="relative rounded-2xl overflow-hidden shadow-md h-80 md:h-96">
                   <Image
                     src="https://images.pexels.com/photos/4498278/pexels-photo-4498278.jpeg"
                     alt="Meditation and mindfulness wellness practices"
@@ -378,14 +262,14 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="fade-in-up">
-                <h2 className="font-sans text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-6">
+              <div>
+                <h2 className="text-4xl md:text-5xl font-bold text-purple-700 mb-6">
                   Wellness & Mindfulness
                 </h2>
-                <p className="text-slate-600 font-sans text-base sm:text-lg leading-relaxed mb-4">
+                <p className="text-lg text-slate-700 leading-relaxed mb-4">
                   Discover the power of mindfulness and wellness practices integrated into your treatment plan. We believe in a holistic approach to mental health that addresses mind, body, and spirit.
                 </p>
-                <p className="text-slate-600 font-sans text-base sm:text-lg leading-relaxed">
+                <p className="text-lg text-slate-700 leading-relaxed">
                   From meditation techniques to stress management strategies, we empower you with tools for lasting peace and emotional resilience.
                 </p>
               </div>
@@ -394,18 +278,18 @@ export default function Home() {
         </section>
 
         {/* TESTIMONIALS SECTION */}
-        <section className="relative py-16 sm:py-20 md:py-24 px-4 sm:px-6 md:px-8 bg-gradient-to-b from-purple-50/30 to-transparent">
-          <div className="max-w-6xl mx-auto w-full">
-            <div className="text-center mb-12 sm:mb-16">
-              <h2 className="font-sans text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-4">
+        <section className="relative py-20 px-4 sm:px-6 md:px-8 bg-gradient-to-b from-purple-50/40 to-white">
+          <div className="max-w-6xl mx-auto">
+            <div className="mb-12">
+              <h2 className="text-4xl md:text-5xl font-bold text-purple-700 mb-4">
                 Client Success Stories
               </h2>
-              <p className="text-slate-600 font-sans max-w-2xl mx-auto text-base sm:text-lg">
+              <p className="text-lg text-slate-600">
                 Real experiences from people finding healing and peace
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 md:gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
                 { text: "Dr. Gorety changed my life. Her compassion and professional expertise helped me navigate my anxiety in ways I never thought possible.", author: "Sarah M.", condition: "Anxiety & Depression" },
                 { text: "Finally found someone who listens and genuinely cares. The medication management has been a game-changer for my well-being.", author: "Michael R.", condition: "Depression & Sleep Issues" },
@@ -413,16 +297,19 @@ export default function Home() {
               ].map((testimonial, idx) => (
                 <div
                   key={idx}
-                  className="bg-gradient-to-br from-purple-50/80 to-purple-100/80 backdrop-blur-sm rounded-3xl p-8 border border-purple-200/50 hover:shadow-xl transition-all duration-300 fade-in-up"
-                  style={{ animationDelay: `${idx * 0.1}s` }}
+                  className="bg-white rounded-xl border border-purple-200/40 p-8 hover:shadow-md transition-all duration-300"
                 >
-                  <p className="text-yellow-400 mb-4 text-xl">★★★★★</p>
-                  <p className="text-slate-700 font-sans italic mb-6 leading-relaxed">
+                  <div className="flex items-center gap-1 mb-4 text-amber-500">
+                    {"★★★★★".split("").map((star, i) => (
+                      <span key={i}>{star}</span>
+                    ))}
+                  </div>
+                  <p className="text-slate-700 italic mb-6 leading-relaxed">
                     "{testimonial.text}"
                   </p>
-                  <div className="border-t border-purple-200 pt-4">
-                    <p className="text-purple-700 font-bold font-sans">{testimonial.author}</p>
-                    <p className="text-sm text-purple-600 font-sans">{testimonial.condition}</p>
+                  <div className="border-t border-purple-100 pt-4">
+                    <p className="font-bold text-purple-700">{testimonial.author}</p>
+                    <p className="text-sm text-purple-600">{testimonial.condition}</p>
                   </div>
                 </div>
               ))}
@@ -431,46 +318,44 @@ export default function Home() {
         </section>
 
         {/* PRICING SECTION */}
-        <section className="relative py-16 sm:py-20 md:py-24 px-4 sm:px-6 md:px-8">
-          <div className="max-w-6xl mx-auto w-full">
-            <div className="text-center mb-12 sm:mb-16">
-              <h2 className="font-sans text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-4">
+        <section className="relative py-20 px-4 sm:px-6 md:px-8">
+          <div className="max-w-6xl mx-auto">
+            <div className="mb-12">
+              <h2 className="text-4xl md:text-5xl font-bold text-purple-700 mb-4">
                 Transparent Pricing
               </h2>
-              <p className="text-slate-600 font-sans max-w-2xl mx-auto text-base sm:text-lg">
+              <p className="text-lg text-slate-600">
                 Flexible payment options and competitive rates
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 md:gap-8 mb-10 sm:mb-12">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               {[
-                { 
-                  title: "Initial Consultation", 
+                {
+                  title: "Initial Consultation",
                   duration: "60 Minutes",
                   items: ["Psychiatric assessment", "Medical history review", "Treatment plan development", "Free 15-minute follow-up"]
                 },
-                { 
-                  title: "Follow-Up Session", 
+                {
+                  title: "Follow-Up Session",
                   duration: "30 Minutes",
                   items: ["Medication management", "Progress assessment", "Treatment adjustments", "Ongoing support"]
                 },
-                { 
-                  title: "Therapy Session", 
+                {
+                  title: "Therapy Session",
                   duration: "50 Minutes",
                   items: ["Individual counseling", "Coping strategies", "Personalized approach", "Evidence-based care"]
                 },
               ].map((service, idx) => (
                 <div
                   key={idx}
-                  className="relative bg-gradient-to-br from-purple-50/80 to-purple-100/80 backdrop-blur-sm rounded-3xl p-8 border border-purple-200/50 hover:border-purple-300 hover:shadow-2xl transition-all duration-300 fade-in-up border-t-4 border-t-purple-400"
-                  style={{ animationDelay: `${idx * 0.1}s` }}
+                  className="bg-white rounded-xl border border-purple-200/40 border-t-4 border-t-purple-500 p-8 hover:shadow-md transition-all duration-300"
                 >
-                  <div className="text-2xl mb-2">📅</div>
-                  <h3 className="font-sans text-xl font-bold text-purple-700 mb-1">{service.title}</h3>
+                  <h3 className="font-bold text-xl text-purple-700 mb-1">{service.title}</h3>
                   <p className="text-purple-600 font-bold mb-6">{service.duration}</p>
-                  <ul className="space-y-3 mb-8">
+                  <ul className="space-y-3">
                     {service.items.map((item, i) => (
-                      <li key={i} className="flex items-start gap-3 text-slate-700 font-sans text-sm">
+                      <li key={i} className="flex items-start gap-3 text-slate-700 text-sm">
                         <span className="text-purple-600 font-bold flex-shrink-0">✓</span>
                         <span>{item}</span>
                       </li>
@@ -480,42 +365,42 @@ export default function Home() {
               ))}
             </div>
 
-            <div className="bg-gradient-to-r from-purple-600/10 to-purple-400/10 border border-purple-200/50 rounded-3xl p-8 text-center">
-              <h3 className="font-sans font-bold text-purple-700 mb-4 text-lg">Payment Methods</h3>
-              <div className="flex flex-wrap justify-center gap-4">
-                <span className="bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-slate-700 border border-purple-200/50">💳 Credit Cards</span>
-                <span className="bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-slate-700 border border-purple-200/50">🏦 ACH Transfer</span>
-                <span className="bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-slate-700 border border-purple-200/50">💰 Cash</span>
-                <span className="bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-slate-700 border border-purple-200/50">📱 Venmo</span>
+            <div className="bg-white rounded-xl border border-purple-200/40 p-8 text-center">
+              <h3 className="font-bold text-purple-700 mb-4 text-lg">Payment Methods</h3>
+              <div className="flex flex-wrap justify-center gap-3 mb-4">
+                <span className="bg-purple-50 rounded-full px-4 py-2 text-sm font-medium text-slate-700">💳 Credit Cards</span>
+                <span className="bg-purple-50 rounded-full px-4 py-2 text-sm font-medium text-slate-700">🏦 ACH Transfer</span>
+                <span className="bg-purple-50 rounded-full px-4 py-2 text-sm font-medium text-slate-700">💰 Cash</span>
+                <span className="bg-purple-50 rounded-full px-4 py-2 text-sm font-medium text-slate-700">📱 Venmo</span>
               </div>
-              <p className="text-slate-600 font-sans text-sm mt-6">Most major insurance plans accepted • Flexible payment plans available</p>
+              <p className="text-slate-600 text-sm">Most major insurance plans accepted • Flexible payment plans available</p>
             </div>
           </div>
         </section>
 
         {/* CONTACT SECTION */}
-        <section id="contact" className="relative py-16 sm:py-20 md:py-24 px-4 sm:px-6 md:px-8 bg-gradient-to-b from-purple-50/30 to-transparent">
-          <div className="max-w-6xl mx-auto w-full">
-            <div className="text-center mb-12 sm:mb-16">
-              <h2 className="font-sans text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-4">
+        <section id="contact" className="relative py-20 px-4 sm:px-6 md:px-8 bg-gradient-to-b from-purple-50/40 to-white">
+          <div className="max-w-6xl mx-auto">
+            <div className="mb-12">
+              <h2 className="text-4xl md:text-5xl font-bold text-purple-700 mb-4">
                 Start Your Journey
               </h2>
-              <p className="text-slate-600 font-sans max-w-2xl mx-auto text-base sm:text-lg">
+              <p className="text-lg text-slate-600">
                 Take the first step towards better mental health
               </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 md:gap-12 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {/* Contact Form */}
-              <form className="fade-in-up bg-gradient-to-br from-purple-50/80 to-purple-100/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 border border-purple-200/50 lg:order-1">
-                <div className="space-y-4 sm:space-y-6">
+              <div className="bg-white rounded-2xl border border-purple-200/40 p-8 md:p-10 shadow-sm">
+                <form className="space-y-6">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-semibold text-slate-700 mb-2">First Name</label>
                       <input
                         type="text"
                         placeholder="Your first name"
-                        className="w-full px-4 py-3 rounded-lg border border-purple-200/50 focus:border-purple-400 focus:outline-none transition-colors bg-white/60 placeholder:text-slate-400"
+                        className="w-full px-4 py-3 rounded-lg border border-purple-200/50 focus:border-purple-400 focus:outline-none transition-colors bg-white"
                       />
                     </div>
                     <div>
@@ -523,7 +408,7 @@ export default function Home() {
                       <input
                         type="text"
                         placeholder="Your last name"
-                        className="w-full px-4 py-3 rounded-lg border border-purple-200/50 focus:border-purple-400 focus:outline-none transition-colors bg-white/60 placeholder:text-slate-400"
+                        className="w-full px-4 py-3 rounded-lg border border-purple-200/50 focus:border-purple-400 focus:outline-none transition-colors bg-white"
                       />
                     </div>
                   </div>
@@ -533,7 +418,7 @@ export default function Home() {
                     <input
                       type="email"
                       placeholder="your@email.com"
-                      className="w-full px-4 py-3 rounded-lg border border-purple-200/50 focus:border-purple-400 focus:outline-none transition-colors bg-white/60 placeholder:text-slate-400"
+                      className="w-full px-4 py-3 rounded-lg border border-purple-200/50 focus:border-purple-400 focus:outline-none transition-colors bg-white"
                     />
                   </div>
 
@@ -542,7 +427,7 @@ export default function Home() {
                     <input
                       type="tel"
                       placeholder="(XXX) XXX-XXXX"
-                      className="w-full px-4 py-3 rounded-lg border border-purple-200/50 focus:border-purple-400 focus:outline-none transition-colors bg-white/60 placeholder:text-slate-400"
+                      className="w-full px-4 py-3 rounded-lg border border-purple-200/50 focus:border-purple-400 focus:outline-none transition-colors bg-white"
                     />
                   </div>
 
@@ -551,7 +436,7 @@ export default function Home() {
                     <textarea
                       placeholder="How can we help you?"
                       rows={4}
-                      className="w-full px-4 py-3 rounded-lg border border-purple-200/50 focus:border-purple-400 focus:outline-none transition-colors bg-white/60 placeholder:text-slate-400"
+                      className="w-full px-4 py-3 rounded-lg border border-purple-200/50 focus:border-purple-400 focus:outline-none transition-colors bg-white"
                     />
                   </div>
 
@@ -559,12 +444,12 @@ export default function Home() {
                     <span>Book Consultation</span>
                     <span>✉️</span>
                   </button>
-                </div>
-              </form>
+                </form>
+              </div>
 
-              {/* Contact Info & Media */}
-              <div className="fade-in-up space-y-6">
-                <div className="relative rounded-3xl overflow-hidden shadow-2xl h-96">
+              {/* Contact Info */}
+              <div>
+                <div className="relative rounded-2xl overflow-hidden shadow-md h-80 md:h-64 mb-6">
                   <Image
                     src="https://images.pexels.com/photos/34833435/pexels-photo-34833435.jpeg"
                     alt="Therapeutic environment and wellness space"
@@ -574,8 +459,8 @@ export default function Home() {
                   <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-purple-800/20" />
                 </div>
 
-                <div className="bg-gradient-to-br from-purple-50/80 to-purple-100/80 backdrop-blur-sm rounded-3xl border border-purple-200/50 p-8">
-                  <h3 className="font-sans text-2xl font-bold text-purple-700 mb-6">Quick Contact</h3>
+                <div className="bg-white rounded-2xl border border-purple-200/40 p-8 shadow-sm mb-6">
+                  <h3 className="font-bold text-2xl text-purple-700 mb-6">Quick Contact</h3>
 
                   <div className="space-y-6">
                     <div>
@@ -594,7 +479,7 @@ export default function Home() {
 
                     <div>
                       <p className="text-xs font-semibold text-purple-600 mb-2">📍 Office Location</p>
-                      <p className="text-slate-700 font-sans text-sm">
+                      <p className="text-slate-700 text-sm">
                         2204 Joe Battle Blvd Suite D203B<br />
                         El Paso, TX 79938
                       </p>
@@ -602,16 +487,16 @@ export default function Home() {
 
                     <div>
                       <p className="text-xs font-semibold text-purple-600 mb-2">🕐 Office Hours</p>
-                      <p className="text-slate-700 font-sans text-sm">
+                      <p className="text-slate-700 text-sm">
                         Monday - Friday: 9:00 AM - 5:00 PM
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-gradient-to-br from-purple-500 to-purple-700 rounded-3xl p-8 text-white">
-                  <p className="font-sans font-bold mb-2 text-lg">✓ We Respond Within 2 Hours</p>
-                  <p className="font-sans text-sm text-purple-100">
+                <div className="bg-purple-700 rounded-2xl p-8 text-white">
+                  <p className="font-bold mb-2 text-lg">✓ We Respond Within 2 Hours</p>
+                  <p className="text-sm text-purple-100">
                     Your message matters. We prioritize rapid response to all inquiries.
                   </p>
                 </div>
@@ -620,17 +505,17 @@ export default function Home() {
           </div>
         </section>
 
-        {/* STAY CONNECTED SECTION */}
-        <section className="relative py-16 sm:py-20 md:py-24 px-4 sm:px-6 md:px-8">
-          <div className="max-w-6xl mx-auto text-center">
-            <h2 className="font-sans text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-4">
+        {/* SOCIAL SECTION */}
+        <section className="relative py-20 px-4 sm:px-6 md:px-8">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-4xl md:text-5xl font-bold text-purple-700 mb-6">
               Stay Connected
             </h2>
-            <p className="text-slate-600 font-sans max-w-2xl mx-auto text-base sm:text-lg mb-10 sm:mb-12">
+            <p className="text-lg text-slate-600 mb-10">
               Follow for mental health tips, resources, and community support
             </p>
 
-            <div className="flex justify-center gap-4 mb-12">
+            <div className="flex justify-center gap-4 mb-10">
               {[
                 { icon: "f", label: "Facebook" },
                 { icon: "📷", label: "Instagram" },
@@ -640,17 +525,17 @@ export default function Home() {
                 <a
                   key={idx}
                   href="#"
-                  className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white border border-purple-200/50 text-purple-600 hover:bg-purple-100/60 hover:scale-110 transition-all duration-300"
+                  className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-white border border-purple-200 text-purple-600 hover:bg-purple-50 hover:border-purple-400 transition-all duration-300"
                   title={social.label}
                 >
-                  <span className="text-xl font-bold">{social.icon}</span>
+                  <span className="text-lg font-bold">{social.icon}</span>
                 </a>
               ))}
             </div>
 
-            <div className="inline-block bg-gradient-to-br from-purple-50/80 to-purple-100/80 backdrop-blur-sm rounded-2xl border border-purple-200/50 px-8 py-4">
-              <p className="text-slate-700 font-sans">
-                <span className="text-lg">🌎</span> <span className="font-medium">Telehealth services</span> available across Texas
+            <div className="bg-white rounded-2xl border border-purple-200/40 px-8 py-5 inline-block">
+              <p className="text-slate-700">
+                <span className="text-lg">🌎</span> <span className="font-semibold">Telehealth services</span> available across Texas
               </p>
             </div>
           </div>
