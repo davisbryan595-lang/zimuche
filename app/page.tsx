@@ -76,14 +76,43 @@ export default function Home() {
     <>
       <Navigation />
 
-      {/* Animated Background with Decorative Blobs */}
-      <div className="fixed inset-0 -z-10 overflow-hidden bg-white">
+      {/* Animated Background with Decorative Blobs and Particles */}
+      <div ref={containerRef} className="fixed inset-0 -z-10 overflow-hidden bg-white">
         {/* Large decorative gradient blob - top right */}
         <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-gradient-to-br from-purple-100 via-purple-50 to-transparent opacity-60 blur-3xl" />
         {/* Medium decorative gradient blob - bottom left */}
         <div className="absolute -bottom-32 -left-32 w-80 h-80 rounded-full bg-gradient-to-tr from-purple-100 via-transparent to-purple-50 opacity-50 blur-3xl" />
         {/* Small accent blob - middle */}
         <div className="absolute top-1/2 right-1/4 w-64 h-64 rounded-full bg-gradient-to-br from-purple-50 to-transparent opacity-40 blur-3xl" />
+
+        {/* Floating Particles */}
+        {particles.map((particle) => (
+          <div
+            key={particle.id}
+            className="absolute rounded-full bg-gradient-to-br from-purple-200 to-purple-100 opacity-20 blur-xl pointer-events-none"
+            style={{
+              left: `${particle.x}px`,
+              top: `${particle.y}px`,
+              width: `${particle.size}px`,
+              height: `${particle.size}px`,
+              transform: "translate(-50%, -50%)",
+            }}
+          />
+        ))}
+
+        {/* Cursor-Following Blur */}
+        <div
+          className="fixed rounded-full bg-gradient-to-br from-purple-400/30 via-purple-300/20 to-transparent opacity-60 blur-3xl pointer-events-none"
+          style={{
+            width: "300px",
+            height: "300px",
+            left: `${cursorPos.x}px`,
+            top: `${cursorPos.y}px`,
+            transform: "translate(-50%, -50%)",
+            transition: "all 0.1s ease-out",
+            zIndex: 0,
+          }}
+        />
       </div>
 
       {/* Loading State */}
@@ -136,7 +165,7 @@ export default function Home() {
             <div className="flex items-start gap-3 mb-4">
               <span className="text-2xl">✨</span>
               <p className="text-slate-700 font-sans leading-relaxed">
-                Welcome to your digital front door to healing and hope. As your trusted psychiatric mental health partner, I provide compassionate, evidence-based care that honors your unique journey. With board certification and specialized expertise, I'm here to help you navigate life's challenges with personalized treatment plans that blend medication management and psychotherapy—because your mental health deserves expert, caring attention.
+                Welcome to your digital front door to healing and hope. As your trusted psychiatric mental health partner, I provide compassionate, evidence-based care that honors your unique journey. With board certification and specialized expertise, I'm here to help you navigate life's challenges with personalized treatment plans that blend medication management and psychotherapy��because your mental health deserves expert, caring attention.
               </p>
             </div>
             
