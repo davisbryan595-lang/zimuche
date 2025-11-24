@@ -5,13 +5,63 @@ import Image from "next/image"
 import Navigation from "@/components/navigation"
 import Footer from "@/components/footer"
 
+interface Particle {
+  id: number
+  x: number
+  y: number
+  size: number
+  vx: number
+  vy: number
+  opacity: number
+}
+
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true)
+  const [particles, setParticles] = useState<Particle[]>([])
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 })
   const containerRef = useRef<HTMLDivElement>(null)
 
+  // Initialize particles
   useEffect(() => {
+    const newParticles: Particle[] = Array.from({ length: 25 }).map((_, i) => ({
+      id: i,
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      size: Math.random() * 60 + 20, // Small particles: 20-80px
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      opacity: Math.random() * 0.4 + 0.15,
+    }))
+    setParticles(newParticles)
     setIsLoading(false)
+  }, [])
+
+  // Animate particles
+  useEffect(() => {
+    const animationInterval = setInterval(() => {
+      setParticles((prev) =>
+        prev.map((particle) => {
+          let newX = particle.x + particle.vx
+          let newY = particle.y + particle.vy
+          let newVx = particle.vx
+          let newVy = particle.vy
+
+          // Bounce off edges
+          if (newX < 0 || newX > window.innerWidth) {
+            newVx = -newVx
+            newX = Math.max(0, Math.min(window.innerWidth, newX))
+          }
+          if (newY < 0 || newY > window.innerHeight) {
+            newVy = -newVy
+            newY = Math.max(0, Math.min(window.innerHeight, newY))
+          }
+
+          return { ...particle, x: newX, y: newY, vx: newVx, vy: newVy }
+        })
+      )
+    }, 40)
+
+    return () => clearInterval(animationInterval)
   }, [])
 
   // Track cursor movement
