@@ -327,18 +327,18 @@ export default function Home() {
         </section>
 
         {/* TREATMENT AREAS SECTION */}
-        <section className="relative py-24 px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="font-sans text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-4">
+        <section className="relative py-16 sm:py-20 md:py-24 px-4 sm:px-6 md:px-8">
+          <div className="max-w-6xl mx-auto w-full">
+            <div className="text-center mb-12 sm:mb-16">
+              <h2 className="font-sans text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-4">
                 Areas of Specialization
               </h2>
-              <p className="text-slate-600 font-sans max-w-2xl mx-auto text-lg">
+              <p className="text-slate-600 font-sans max-w-2xl mx-auto text-base sm:text-lg">
                 Expertise in treating a wide range of mental health concerns
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
               {[
                 { title: "Anxiety Disorders", icon: "⚡" },
                 { title: "Depression Management", icon: "☁️" },
@@ -364,9 +364,9 @@ export default function Home() {
         </section>
 
         {/* WELLNESS MEDIA SECTION */}
-        <section className="relative py-24 px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
+        <section className="relative py-16 sm:py-20 md:py-24 px-4 sm:px-6 md:px-8">
+          <div className="max-w-6xl mx-auto w-full">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 md:gap-12 items-center mb-16 sm:mb-20">
               <div className="fade-in-up">
                 <div className="relative rounded-3xl overflow-hidden shadow-2xl h-80 md:h-96">
                   <Image
@@ -379,13 +379,13 @@ export default function Home() {
               </div>
 
               <div className="fade-in-up">
-                <h2 className="font-sans text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-6">
+                <h2 className="font-sans text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-6">
                   Wellness & Mindfulness
                 </h2>
-                <p className="text-slate-600 font-sans text-lg leading-relaxed mb-4">
+                <p className="text-slate-600 font-sans text-base sm:text-lg leading-relaxed mb-4">
                   Discover the power of mindfulness and wellness practices integrated into your treatment plan. We believe in a holistic approach to mental health that addresses mind, body, and spirit.
                 </p>
-                <p className="text-slate-600 font-sans text-lg leading-relaxed">
+                <p className="text-slate-600 font-sans text-base sm:text-lg leading-relaxed">
                   From meditation techniques to stress management strategies, we empower you with tools for lasting peace and emotional resilience.
                 </p>
               </div>
@@ -394,18 +394,18 @@ export default function Home() {
         </section>
 
         {/* TESTIMONIALS SECTION */}
-        <section className="relative py-24 px-4 bg-gradient-to-b from-purple-50/30 to-transparent">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="font-sans text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-4">
+        <section className="relative py-16 sm:py-20 md:py-24 px-4 sm:px-6 md:px-8 bg-gradient-to-b from-purple-50/30 to-transparent">
+          <div className="max-w-6xl mx-auto w-full">
+            <div className="text-center mb-12 sm:mb-16">
+              <h2 className="font-sans text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-4">
                 Client Success Stories
               </h2>
-              <p className="text-slate-600 font-sans max-w-2xl mx-auto text-lg">
+              <p className="text-slate-600 font-sans max-w-2xl mx-auto text-base sm:text-lg">
                 Real experiences from people finding healing and peace
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 md:gap-8">
               {[
                 { text: "Dr. Gorety changed my life. Her compassion and professional expertise helped me navigate my anxiety in ways I never thought possible.", author: "Sarah M.", condition: "Anxiety & Depression" },
                 { text: "Finally found someone who listens and genuinely cares. The medication management has been a game-changer for my well-being.", author: "Michael R.", condition: "Depression & Sleep Issues" },
@@ -431,18 +431,18 @@ export default function Home() {
         </section>
 
         {/* PRICING SECTION */}
-        <section className="relative py-24 px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="font-sans text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-4">
+        <section className="relative py-16 sm:py-20 md:py-24 px-4 sm:px-6 md:px-8">
+          <div className="max-w-6xl mx-auto w-full">
+            <div className="text-center mb-12 sm:mb-16">
+              <h2 className="font-sans text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-4">
                 Transparent Pricing
               </h2>
-              <p className="text-slate-600 font-sans max-w-2xl mx-auto text-lg">
+              <p className="text-slate-600 font-sans max-w-2xl mx-auto text-base sm:text-lg">
                 Flexible payment options and competitive rates
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 md:gap-8 mb-10 sm:mb-12">
               {[
                 { 
                   title: "Initial Consultation", 
@@ -494,21 +494,21 @@ export default function Home() {
         </section>
 
         {/* CONTACT SECTION */}
-        <section id="contact" className="relative py-24 px-4 bg-gradient-to-b from-purple-50/30 to-transparent">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="font-sans text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-4">
+        <section id="contact" className="relative py-16 sm:py-20 md:py-24 px-4 sm:px-6 md:px-8 bg-gradient-to-b from-purple-50/30 to-transparent">
+          <div className="max-w-6xl mx-auto w-full">
+            <div className="text-center mb-12 sm:mb-16">
+              <h2 className="font-sans text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-4">
                 Start Your Journey
               </h2>
-              <p className="text-slate-600 font-sans max-w-2xl mx-auto text-lg">
+              <p className="text-slate-600 font-sans max-w-2xl mx-auto text-base sm:text-lg">
                 Take the first step towards better mental health
               </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 md:gap-12 items-start">
               {/* Contact Form */}
-              <form className="fade-in-up bg-gradient-to-br from-purple-50/80 to-purple-100/80 backdrop-blur-sm rounded-3xl p-8 md:p-10 border border-purple-200/50 lg:order-1">
-                <div className="space-y-6">
+              <form className="fade-in-up bg-gradient-to-br from-purple-50/80 to-purple-100/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 border border-purple-200/50 lg:order-1">
+                <div className="space-y-4 sm:space-y-6">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-semibold text-slate-700 mb-2">First Name</label>
@@ -621,12 +621,12 @@ export default function Home() {
         </section>
 
         {/* STAY CONNECTED SECTION */}
-        <section className="relative py-24 px-4">
+        <section className="relative py-16 sm:py-20 md:py-24 px-4 sm:px-6 md:px-8">
           <div className="max-w-6xl mx-auto text-center">
-            <h2 className="font-sans text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-4">
+            <h2 className="font-sans text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-4">
               Stay Connected
             </h2>
-            <p className="text-slate-600 font-sans max-w-2xl mx-auto text-lg mb-12">
+            <p className="text-slate-600 font-sans max-w-2xl mx-auto text-base sm:text-lg mb-10 sm:mb-12">
               Follow for mental health tips, resources, and community support
             </p>
 
