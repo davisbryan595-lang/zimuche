@@ -87,6 +87,23 @@ export default function Home() {
         {/* Small accent blob - middle */}
         <div className="absolute top-1/2 right-1/4 w-64 h-64 rounded-full bg-gradient-to-br from-purple-50 to-transparent opacity-40 blur-3xl" />
 
+        {/* Floating Particles - Small and Visible */}
+        {particles.map((particle) => (
+          <div
+            key={particle.id}
+            className="absolute rounded-full pointer-events-none"
+            style={{
+              left: `${particle.x}px`,
+              top: `${particle.y}px`,
+              width: `${particle.size}px`,
+              height: `${particle.size}px`,
+              background: `radial-gradient(circle, rgba(168, 85, 247, ${particle.opacity}) 0%, rgba(147, 51, 234, ${particle.opacity * 0.6}) 50%, transparent 70%)`,
+              filter: "blur(8px)",
+              transform: "translate(-50%, -50%)",
+            }}
+          />
+        ))}
+
         {/* Cursor-Following Blur */}
         <div
           className="fixed rounded-full bg-gradient-to-br from-purple-400/60 via-purple-300/40 to-transparent opacity-100 blur-3xl pointer-events-none"
