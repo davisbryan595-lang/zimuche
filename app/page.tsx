@@ -61,8 +61,22 @@ export default function Home() {
       )}
 
       <main className="relative">
-        {/* HERO SECTION - Logo Removed */}
+        {/* HERO SECTION */}
         <section className="min-h-screen flex flex-col items-center justify-center px-4 pt-20 pb-16">
+          {/* Logo Image */}
+          <div
+            className="mb-8 w-32 h-32 relative fade-in-up"
+            style={{ animationDelay: "0s" }}
+          >
+            <Image
+              src="https://cdn.builder.io/api/v1/image/assets%2Fc70ebb3e5225486399c19406cd27bb43%2F8d9fe4b88ac049fb93fd853a5db6c03c?format=webp&width=800"
+              alt="Zimuche Health Harmony Logo"
+              width={128}
+              height={128}
+              className="w-full h-full object-contain drop-shadow-lg"
+            />
+          </div>
+
           {/* Main Heading */}
           <h1
             className="font-playfair text-5xl md:text-7xl font-bold text-center mb-4 fade-in-up"

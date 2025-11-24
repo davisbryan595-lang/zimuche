@@ -14,7 +14,12 @@ export default function Navigation() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <div className="w-10 h-10 relative">
-              <Image src="/images/colored-logo.png" alt="Zimuche Logo" width={40} height={40} />
+              <Image
+                src="https://cdn.builder.io/api/v1/image/assets%2Fc70ebb3e5225486399c19406cd27bb43%2F8d9fe4b88ac049fb93fd853a5db6c03c?format=webp&width=800"
+                alt="Zimuche Logo"
+                width={40}
+                height={40}
+              />
             </div>
             <span className="font-playfair text-lg font-bold text-deep-purple hidden sm:inline">Zimuche</span>
           </Link>
