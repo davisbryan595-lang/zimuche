@@ -219,7 +219,7 @@ export default function Home() {
             <div className="fade-in-up order-2 md:order-1">
               <div className="relative rounded-2xl overflow-hidden shadow-2xl h-96 md:h-[28rem]">
                 <Image
-                  src="/images/colored-logo.png"
+                  src="https://cdn.builder.io/api/v1/image/assets%2Fc70ebb3e5225486399c19406cd27bb43%2F8d9fe4b88ac049fb93fd853a5db6c03c?format=webp&width=800"
                   alt="Dr. Mariagorety Nwiloh - Psychiatric Nurse Practitioner"
                   fill
                   className="object-cover"
