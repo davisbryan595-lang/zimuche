@@ -1,53 +1,127 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import Image from "next/image"
 import Navigation from "@/components/navigation"
 import Footer from "@/components/footer"
 
+interface Particle {
+  id: number
+  x: number
+  y: number
+  size: number
+  vx: number
+  vy: number
+  opacity: number
+}
+
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true)
-  const [particles, setParticles] = useState<{ id: number; left: string; top: string; size: string }[]>([])
+  const [particles, setParticles] = useState<Particle[]>([])
+  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 })
+  const containerRef = useRef<HTMLDivElement>(null)
 
+  // Initialize particles
   useEffect(() => {
-    setIsLoading(false)
-
-    // Generate floating particles
-    const newParticles = Array.from({ length: 8 }).map((_, i) => ({
+    const newParticles: Particle[] = Array.from({ length: 25 }).map((_, i) => ({
       id: i,
-      left: Math.random() * 100 + "%",
-      top: Math.random() * 100 + "%",
-      size: Math.random() * 200 + 100 + "px",
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      size: Math.random() * 60 + 20, // Small particles: 20-80px
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      opacity: Math.random() * 0.4 + 0.15,
     }))
     setParticles(newParticles)
+    setIsLoading(false)
+  }, [])
+
+  // Animate particles
+  useEffect(() => {
+    const animationInterval = setInterval(() => {
+      setParticles((prev) =>
+        prev.map((particle) => {
+          let newX = particle.x + particle.vx
+          let newY = particle.y + particle.vy
+          let newVx = particle.vx
+          let newVy = particle.vy
+
+          // Bounce off edges
+          if (newX < 0 || newX > window.innerWidth) {
+            newVx = -newVx
+            newX = Math.max(0, Math.min(window.innerWidth, newX))
+          }
+          if (newY < 0 || newY > window.innerHeight) {
+            newVy = -newVy
+            newY = Math.max(0, Math.min(window.innerHeight, newY))
+          }
+
+          return { ...particle, x: newX, y: newY, vx: newVx, vy: newVy }
+        })
+      )
+    }, 40)
+
+    return () => clearInterval(animationInterval)
+  }, [])
+
+  // Track cursor movement
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setCursorPos({ x: e.clientX, y: e.clientY })
+    }
+
+    window.addEventListener("mousemove", handleMouseMove)
+    return () => window.removeEventListener("mousemove", handleMouseMove)
   }, [])
 
   return (
     <>
       <Navigation />
 
-      {/* Animated Background */}
-      <div className="fixed inset-0 -z-10 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-lavender-50 via-lavender-100 to-lavender-50" />
+      {/* Animated Background with Decorative Blobs */}
+      <div ref={containerRef} className="fixed inset-0 -z-10 overflow-hidden bg-white">
+        {/* Large decorative gradient blob - top right */}
+        <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-gradient-to-br from-purple-100 via-purple-50 to-transparent opacity-60 blur-3xl" />
+        {/* Medium decorative gradient blob - bottom left */}
+        <div className="absolute -bottom-32 -left-32 w-80 h-80 rounded-full bg-gradient-to-tr from-purple-100 via-transparent to-purple-50 opacity-50 blur-3xl" />
+        {/* Small accent blob - middle */}
+        <div className="absolute top-1/2 right-1/4 w-64 h-64 rounded-full bg-gradient-to-br from-purple-50 to-transparent opacity-40 blur-3xl" />
+
+        {/* Floating Particles - Small and Visible */}
         {particles.map((particle) => (
           <div
             key={particle.id}
-            className="particle absolute rounded-full"
+            className="absolute rounded-full pointer-events-none"
             style={{
-              left: particle.left,
-              top: particle.top,
-              width: particle.size,
-              height: particle.size,
-              animation: `float ${8 + particle.id * 2}s ease-in-out infinite`,
-              animationDelay: `${particle.id * 0.5}s`,
+              left: `${particle.x}px`,
+              top: `${particle.y}px`,
+              width: `${particle.size}px`,
+              height: `${particle.size}px`,
+              background: `radial-gradient(circle, rgba(168, 85, 247, ${particle.opacity}) 0%, rgba(147, 51, 234, ${particle.opacity * 0.6}) 50%, transparent 70%)`,
+              filter: "blur(8px)",
+              transform: "translate(-50%, -50%)",
             }}
           />
         ))}
+
+        {/* Cursor-Following Blur */}
+        <div
+          className="fixed rounded-full bg-gradient-to-br from-purple-400/60 via-purple-300/40 to-transparent opacity-100 blur-3xl pointer-events-none"
+          style={{
+            width: "300px",
+            height: "300px",
+            left: `${cursorPos.x}px`,
+            top: `${cursorPos.y}px`,
+            transform: "translate(-50%, -50%)",
+            transition: "all 0.1s ease-out",
+            zIndex: 0,
+          }}
+        />
       </div>
 
       {/* Loading State */}
       {isLoading && (
-        <div className="fixed inset-0 flex items-center justify-center bg-lavender-50 z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-white z-50">
           <div className="text-center">
             <div className="mb-4 inline-block animate-spin">
               <svg className="w-12 h-12 text-purple-600" fill="none" viewBox="0 0 24 24">
@@ -55,329 +129,540 @@ export default function Home() {
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
               </svg>
             </div>
-            <p className="text-slate-600 font-satoshi">Opening the path to peace...</p>
+            <p className="text-slate-700 font-sans">Opening the path to peace...</p>
           </div>
         </div>
       )}
 
       <main className="relative">
-        {/* HERO SECTION - Logo Removed */}
-        <section className="min-h-screen flex flex-col items-center justify-center px-4 pt-20 pb-16">
-          {/* Main Heading */}
-          <h1
-            className="font-playfair text-5xl md:text-7xl font-bold text-center mb-4 fade-in-up"
-            style={{ animationDelay: "0.1s" }}
-          >
-            <span className="bg-gradient-to-r from-purple-700 via-purple-600 to-deep-purple bg-clip-text text-transparent">
-              Zimuche
-            </span>
+        {/* HERO SECTION */}
+        <section id="hero" className="relative min-h-screen flex flex-col items-center justify-center px-4 py-20 pt-32">
+          {/* Board Certified Badge */}
+          <div className="mb-6 inline-flex items-center gap-2 bg-purple-100/60 backdrop-blur-sm border border-purple-200/50 rounded-full px-4 py-2 animate-fade-in-down">
+            <span className="text-purple-600">🏆</span>
+            <span className="text-sm font-medium text-purple-700">Board Certified Professional</span>
+          </div>
+
+          {/* Logo */}
+          <div className="mb-8 w-40 h-40 relative animate-fade-in">
+            <Image 
+              src="https://cdn.builder.io/api/v1/image/assets%2Fc70ebb3e5225486399c19406cd27bb43%2F8d9fe4b88ac049fb93fd853a5db6c03c?format=webp&width=800" 
+              alt="Zimuche Health Harmony Logo" 
+              width={160}
+              height={160}
+              className="w-full h-full object-contain drop-shadow-xl"
+            />
+          </div>
+
+          {/* Main Heading with Gradient */}
+          <h1 className="font-sans text-5xl md:text-7xl font-bold text-center mb-4 bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent animate-fade-in-up">
+            Zimuche
           </h1>
 
           {/* Subheading */}
-          <p
-            className="text-2xl md:text-3xl text-center mb-2 fade-in-up text-purple-600 font-satoshi"
-            style={{ animationDelay: "0.2s" }}
-          >
+          <p className="text-2xl md:text-3xl text-center mb-6 text-purple-600 font-medium animate-fade-in-up">
             Health Harmony
           </p>
 
-          {/* Tagline */}
-          <p
-            className="text-center text-slate-600 text-lg md:text-xl mb-12 max-w-2xl font-satoshi fade-in-up"
-            style={{ animationDelay: "0.3s" }}
-          >
-            Mental Health Counseling & Medication Management
-          </p>
-
-          {/* Healing Message */}
-          <p
-            className="text-center text-slate-700 text-xl md:text-2xl mb-16 max-w-3xl font-playfair italic fade-in-up"
-            style={{ animationDelay: "0.4s" }}
-          >
-            Where Your Mind Finds Its Peace
-          </p>
+          {/* Welcome Card */}
+          <div className="max-w-2xl mx-auto mb-12 bg-gradient-to-br from-purple-50/80 via-purple-100/40 to-purple-50/60 backdrop-blur-sm rounded-3xl border border-purple-200/50 p-8 md:p-10 shadow-2xl animate-fade-in-up">
+            <div className="flex items-start gap-3 mb-4">
+              <span className="text-2xl">✨</span>
+              <p className="text-slate-700 font-sans leading-relaxed">
+                Welcome to your digital front door to healing and hope. As your trusted psychiatric mental health partner, I provide compassionate, evidence-based care that honors your unique journey. With board certification and specialized expertise, I'm here to help you navigate life's challenges with personalized treatment plans that blend medication management and psychotherapy—because your mental health deserves expert, caring attention.
+              </p>
+            </div>
+            
+            <div className="flex flex-col sm:flex-row gap-6 pt-4">
+              <div className="text-center sm:text-left">
+                <p className="text-3xl font-bold text-purple-600">15+</p>
+                <p className="text-sm text-slate-600 font-medium">Years Experience</p>
+              </div>
+              <div className="h-0.5 sm:h-auto sm:w-0.5 bg-purple-200 sm:bg-purple-200" />
+              <div className="text-center sm:text-left">
+                <p className="text-3xl font-bold text-purple-600">500+</p>
+                <p className="text-sm text-slate-600 font-medium">Lives Transformed</p>
+              </div>
+              <div className="h-0.5 sm:h-auto sm:w-0.5 bg-purple-200 sm:bg-purple-200" />
+              <div className="text-center sm:text-left">
+                <p className="text-3xl font-bold text-purple-600">DNP</p>
+                <p className="text-sm text-slate-600 font-medium">Board Certified</p>
+              </div>
+            </div>
+          </div>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col md:flex-row gap-4 fade-in-up mb-16" style={{ animationDelay: "0.5s" }}>
-            <a href="#contact" className="gradient-btn">
-              Begin Your Journey
+          <div className="flex flex-col sm:flex-row gap-4 mb-8 animate-fade-in-up">
+            <a href="#contact" className="hero-btn">
+              <span>Begin Your Journey</span>
+              <span>→</span>
             </a>
-            <a href="#services" className="gradient-btn-secondary">
+            <a href="#services" className="hero-btn-secondary">
               Learn More
             </a>
           </div>
 
           {/* Quick Contact */}
-          <div className="text-center fade-in-up" style={{ animationDelay: "0.6s" }}>
-            <p className="text-slate-600 text-sm font-satoshi mb-4">Ready to talk?</p>
+          <div className="text-center animate-fade-in-up">
+            <p className="text-slate-600 text-sm font-medium mb-3">Ready to talk?</p>
             <a
               href="tel:817-966-3989"
-              className="text-purple-600 font-semibold hover:text-deep-purple transition-colors text-lg font-satoshi"
+              className="text-purple-600 font-bold hover:text-purple-700 transition-colors text-lg"
             >
-              Call 817-966-3989
+              📞 Call 817-966-3989
             </a>
           </div>
         </section>
 
-        {/* QUICK STATS SECTION */}
-        <section className="py-20 px-4 bg-gradient-to-r from-purple-600/10 to-teal-600/10">
+        {/* SERVICES SECTION */}
+        <section id="services" className="relative py-24 px-4">
           <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-              <div className="fade-in-up">
-                <p className="font-playfair text-5xl font-bold text-deep-purple mb-2">500+</p>
-                <p className="text-slate-600 font-satoshi">Lives Transformed</p>
+            {/* Services Header with Image */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+              <div className="fade-in-up order-2 lg:order-1">
+                <div className="relative rounded-3xl overflow-hidden shadow-2xl h-80 md:h-96">
+                  <Image
+                    src="https://images.pexels.com/photos/5407206/pexels-photo-5407206.jpeg"
+                    alt="Professional therapy and counseling services"
+                    fill
+                    className="object-cover hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
               </div>
-              <div className="fade-in-up" style={{ animationDelay: "0.1s" }}>
-                <p className="font-playfair text-5xl font-bold text-deep-purple mb-2">5★</p>
-                <p className="text-slate-600 font-satoshi">Client Rated</p>
-              </div>
-              <div className="fade-in-up" style={{ animationDelay: "0.2s" }}>
-                <p className="font-playfair text-5xl font-bold text-deep-purple mb-2">Same-Week</p>
-                <p className="text-slate-600 font-satoshi">Appointments Available</p>
+
+              <div className="fade-in-up order-1 lg:order-2">
+                <h2 className="font-sans text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-4">
+                  Comprehensive Mental Health Services
+                </h2>
+                <p className="text-slate-600 font-sans max-w-2xl text-lg">
+                  Expert care tailored to your unique needs with professional expertise and compassionate approach
+                </p>
               </div>
             </div>
-          </div>
-        </section>
-
-        {/* SERVICES SECTION */}
-        <section id="services" className="py-24 px-4">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="font-playfair text-4xl md:text-5xl font-bold text-center mb-4 text-deep-purple">
-              Our Services
-            </h2>
-            <p className="text-center text-slate-600 font-satoshi mb-16 max-w-2xl mx-auto">
-              Comprehensive mental health care tailored to your unique needs
-            </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Service Cards */}
               {[
-                {
-                  title: "Psychiatric Evaluation",
-                  description: "Thorough assessment and diagnosis to understand your mental health",
-                  icon: "🧠",
-                },
-                {
-                  title: "Medication Management",
-                  description: "Expert prescription monitoring and adjustment for optimal wellness",
-                  icon: "💊",
-                },
-                {
-                  title: "Individual Therapy",
-                  description: "One-on-one counseling sessions for personal growth and healing",
-                  icon: "💬",
-                },
-                {
-                  title: "Couples & Family Sessions",
-                  description: "Strengthen relationships and resolve conflicts together",
-                  icon: "👥",
-                },
-                {
-                  title: "Telehealth Care",
-                  description: "Convenient virtual appointments from the comfort of your home",
-                  icon: "📱",
-                },
-                {
-                  title: "Wellness Workshops",
-                  description: "Group sessions on stress management and coping strategies",
-                  icon: "🌸",
-                },
+                { title: "Psychiatric Evaluation", description: "Thorough assessment and diagnosis", icon: "🧠" },
+                { title: "Medication Management", description: "Expert prescription monitoring", icon: "💊" },
+                { title: "Individual Therapy", description: "One-on-one counseling sessions", icon: "💬" },
+                { title: "Couples & Family Sessions", description: "Strengthen relationships", icon: "👥" },
+                { title: "Telehealth Care", description: "Convenient virtual appointments", icon: "📱" },
+                { title: "Wellness Workshops", description: "Group sessions on coping strategies", icon: "🌸" },
               ].map((service, idx) => (
                 <div
                   key={idx}
-                  className="group service-card bg-white/70 backdrop-blur-sm rounded-2xl p-8 border border-lavender-200 hover:border-purple-600 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 fade-in-up"
+                  className="group service-card bg-gradient-to-br from-purple-50/80 to-purple-100/80 backdrop-blur-sm rounded-3xl p-8 border border-purple-200/50 hover:border-purple-300 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 fade-in-up"
                   style={{ animationDelay: `${idx * 0.1}s` }}
                 >
-                  <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">{service.icon}</div>
-                  <h3 className="font-playfair text-2xl font-bold text-deep-purple mb-3">{service.title}</h3>
-                  <p className="text-slate-600 font-satoshi mb-6">{service.description}</p>
-                  <button className="gradient-btn text-sm w-full py-2">Book Service</button>
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-400/30 to-purple-600/30 mb-4 group-hover:scale-110 transition-transform">
+                    <span className="text-3xl">{service.icon}</span>
+                  </div>
+                  <h3 className="font-sans text-xl font-bold text-purple-600 mb-2">{service.title}</h3>
+                  <p className="text-slate-600 font-sans text-sm leading-relaxed">{service.description}</p>
                 </div>
               ))}
             </div>
-          </div>
-        </section>
 
-        {/* ABOUT DR. GORETY SECTION */}
-        <section id="about" className="py-24 px-4 bg-gradient-to-r from-lavender-100/50 to-lavender-50">
-          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            {/* Image */}
-            <div className="fade-in-up order-2 md:order-1">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl h-96 md:h-[28rem]">
-                <Image
-                  src="/images/colored-logo.png"
-                  alt="Dr. Mariagorety Nwiloh - Psychiatric Nurse Practitioner"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            </div>
-
-            {/* Content */}
-            <div className="fade-in-up order-1 md:order-2" style={{ animationDelay: "0.2s" }}>
-              <h2 className="font-playfair text-4xl font-bold text-deep-purple mb-4">
-                Meet Dr. Mariagorety Nwiloh, DNP
-              </h2>
-              <p className="text-slate-600 font-satoshi text-lg leading-relaxed mb-6">
-                With over 15 years of experience in psychiatric nursing and mental health care, Dr. Gorety brings
-                compassion, expertise, and evidence-based treatment to every patient interaction.
-              </p>
-              <p className="text-slate-600 font-satoshi text-lg leading-relaxed mb-6">
-                As a board-certified Psychiatric Mental Health Nurse Practitioner, she specializes in medication
-                management, individual therapy, and creating personalized treatment plans that honor your unique needs.
-              </p>
-
-              {/* Credentials */}
-              <div className="grid grid-cols-2 gap-4 mb-8">
-                <div className="bg-white/70 backdrop-blur-sm rounded-xl p-4 border border-lavender-200">
-                  <p className="font-playfair font-bold text-deep-purple">DNP</p>
-                  <p className="text-sm text-slate-600 font-satoshi">Doctor of Nursing Practice</p>
-                </div>
-                <div className="bg-white/70 backdrop-blur-sm rounded-xl p-4 border border-lavender-200">
-                  <p className="font-playfair font-bold text-deep-purple">PMHNP-BC</p>
-                  <p className="text-sm text-slate-600 font-satoshi">Psychiatric Mental Health NP</p>
-                </div>
-              </div>
-
-              <p className="font-playfair text-xl italic text-purple-600 mb-8">
-                "Healing starts with being truly heard and understood."
-              </p>
-
-              <a href="#contact" className="gradient-btn">
-                Schedule Your Session
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
+              <a href="#contact" className="hero-btn">
+                <span>Schedule a Service</span>
+                <span>→</span>
+              </a>
+              <a href="#about" className="hero-btn-secondary">
+                Learn More About Dr. Gorety
               </a>
             </div>
           </div>
         </section>
 
-        {/* TESTIMONIALS SECTION */}
-        <section id="testimonials" className="py-24 px-4">
+        {/* ABOUT SECTION */}
+        <section id="about" className="relative py-24 px-4 bg-gradient-to-b from-purple-50/30 to-transparent">
           <div className="max-w-6xl mx-auto">
-            <h2 className="font-playfair text-4xl md:text-5xl font-bold text-center mb-4 text-deep-purple">
-              What Our Clients Say
-            </h2>
-            <p className="text-center text-slate-600 font-satoshi mb-16 max-w-2xl mx-auto">
-              Real stories from people who have found healing and peace through our care
-            </p>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              {/* Image Section */}
+              <div className="fade-in-up order-2 lg:order-1">
+                <div className="relative rounded-3xl overflow-hidden shadow-2xl h-80 md:h-[450px]">
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-400/20 to-purple-600/20 z-10" />
+                  <Image
+                    src="https://cdn.builder.io/api/v1/image/assets%2Fc70ebb3e5225486399c19406cd27bb43%2F8d9fe4b88ac049fb93fd853a5db6c03c?format=webp&width=800"
+                    alt="Dr. Mariagorety Nwiloh - Psychiatric Nurse Practitioner"
+                    fill
+                    className="object-cover hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+              </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {/* Content Section */}
+              <div className="fade-in-up order-1 lg:order-2">
+                <h2 className="font-sans text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-6">
+                  About Dr. Mariagorety Nwiloh, DNP
+                </h2>
+
+                {/* Credentials Badges */}
+                <div className="flex flex-wrap gap-3 mb-8">
+                  <div className="inline-flex items-center gap-2 bg-purple-100/80 backdrop-blur-sm border border-purple-200/50 rounded-full px-4 py-2">
+                    <span className="text-lg">📚</span>
+                    <div>
+                      <p className="text-xs font-semibold text-purple-700">DNP</p>
+                      <p className="text-xs text-purple-600">Doctor of Nursing Practice</p>
+                    </div>
+                  </div>
+                  <div className="inline-flex items-center gap-2 bg-purple-100/80 backdrop-blur-sm border border-purple-200/50 rounded-full px-4 py-2">
+                    <span className="text-lg">✓</span>
+                    <div>
+                      <p className="text-xs font-semibold text-purple-700">PMHNP-BC</p>
+                      <p className="text-xs text-purple-600">Board Certified</p>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="text-slate-700 font-sans text-lg leading-relaxed mb-6">
+                  With over 15 years of experience in psychiatric nursing and mental health care, Dr. Gorety brings compassion, expertise, and evidence-based treatment to every patient interaction.
+                </p>
+
+                <p className="text-slate-700 font-sans text-lg leading-relaxed mb-8">
+                  As a board-certified Psychiatric Mental Health Nurse Practitioner, she specializes in medication management, individual therapy, and creating personalized treatment plans that honor your unique needs.
+                </p>
+
+                <p className="text-xl italic text-purple-600 font-sans mb-8">
+                  "Healing starts with being truly heard and understood."
+                </p>
+
+                <a href="#contact" className="hero-btn">
+                  <span>Schedule Your Session</span>
+                  <span>→</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* TREATMENT AREAS SECTION */}
+        <section className="relative py-24 px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="font-sans text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-4">
+                Areas of Specialization
+              </h2>
+              <p className="text-slate-600 font-sans max-w-2xl mx-auto text-lg">
+                Expertise in treating a wide range of mental health concerns
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
-                {
-                  text: "Dr. Gorety changed my life. Her compassion and professional expertise helped me navigate my anxiety in ways I never thought possible.",
-                  author: "- J.M.",
-                },
-                {
-                  text: "Finally found someone who listens and genuinely cares. The medication management has been a game-changer for my well-being.",
-                  author: "- S.R.",
-                },
-                {
-                  text: "The telehealth sessions are so convenient, and the quality of care is exceptional. Highly recommend!",
-                  author: "- M.T.",
-                },
-              ].map((testimonial, idx) => (
+                { title: "Anxiety Disorders", icon: "⚡" },
+                { title: "Depression Management", icon: "☁️" },
+                { title: "ADHD & ADD", icon: "🧩" },
+                { title: "Bipolar Disorder", icon: "🌊" },
+                { title: "OCD & PTSD", icon: "🛡️" },
+                { title: "Sleep Disorders", icon: "😴" },
+                { title: "Substance Use Disorders", icon: "🌱" },
+                { title: "Relationship Issues", icon: "💞" },
+                { title: "Life Transitions", icon: "🌈" },
+              ].map((area, idx) => (
                 <div
                   key={idx}
-                  className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 border border-lavender-200 hover:shadow-lg transition-all duration-300 fade-in-up"
-                  style={{ animationDelay: `${idx * 0.1}s` }}
+                  className="bg-gradient-to-br from-purple-50/80 to-purple-100/80 backdrop-blur-sm rounded-2xl p-6 border border-purple-200/50 hover:border-purple-300 hover:shadow-lg transition-all duration-300 fade-in-up"
+                  style={{ animationDelay: `${idx * 0.08}s` }}
                 >
-                  <p className="text-yellow-400 mb-4 text-2xl">★★★★★</p>
-                  <p className="text-slate-700 font-satoshi italic mb-6">"{testimonial.text}"</p>
-                  <p className="text-purple-600 font-playfair font-bold">{testimonial.author}</p>
+                  <div className="text-4xl mb-3">{area.icon}</div>
+                  <h3 className="font-sans font-bold text-purple-700">{area.title}</h3>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* CONTACT & BOOKING SECTION */}
-        <section id="contact" className="py-24 px-4 bg-gradient-to-r from-deep-purple/5 to-purple-600/5">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="font-playfair text-4xl md:text-5xl font-bold text-center mb-4 text-deep-purple">
-              Begin Your Journey
-            </h2>
-            <p className="text-center text-slate-600 font-satoshi mb-16 max-w-2xl mx-auto">
-              Ready to prioritize your mental health? Let's start with a conversation.
-            </p>
+        {/* WELLNESS MEDIA SECTION */}
+        <section className="relative py-24 px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
+              <div className="fade-in-up">
+                <div className="relative rounded-3xl overflow-hidden shadow-2xl h-80 md:h-96">
+                  <Image
+                    src="https://images.pexels.com/photos/4498278/pexels-photo-4498278.jpeg"
+                    alt="Meditation and mindfulness wellness practices"
+                    fill
+                    className="object-cover hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+              </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-              {/* Contact Info */}
-              <div className="fade-in-up space-y-8">
-                <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-lavender-200">
-                  <h3 className="font-playfair text-2xl font-bold text-deep-purple mb-3">Quick Contact</h3>
-                  <div className="space-y-4">
+              <div className="fade-in-up">
+                <h2 className="font-sans text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-6">
+                  Wellness & Mindfulness
+                </h2>
+                <p className="text-slate-600 font-sans text-lg leading-relaxed mb-4">
+                  Discover the power of mindfulness and wellness practices integrated into your treatment plan. We believe in a holistic approach to mental health that addresses mind, body, and spirit.
+                </p>
+                <p className="text-slate-600 font-sans text-lg leading-relaxed">
+                  From meditation techniques to stress management strategies, we empower you with tools for lasting peace and emotional resilience.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* TESTIMONIALS SECTION */}
+        <section className="relative py-24 px-4 bg-gradient-to-b from-purple-50/30 to-transparent">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="font-sans text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-4">
+                Client Success Stories
+              </h2>
+              <p className="text-slate-600 font-sans max-w-2xl mx-auto text-lg">
+                Real experiences from people finding healing and peace
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[
+                { text: "Dr. Gorety changed my life. Her compassion and professional expertise helped me navigate my anxiety in ways I never thought possible.", author: "Sarah M.", condition: "Anxiety & Depression" },
+                { text: "Finally found someone who listens and genuinely cares. The medication management has been a game-changer for my well-being.", author: "Michael R.", condition: "Depression & Sleep Issues" },
+                { text: "The telehealth sessions are so convenient, and the quality of care is exceptional. Highly recommend!", author: "Jennifer L.", condition: "ADHD & Anxiety" },
+              ].map((testimonial, idx) => (
+                <div
+                  key={idx}
+                  className="bg-gradient-to-br from-purple-50/80 to-purple-100/80 backdrop-blur-sm rounded-3xl p-8 border border-purple-200/50 hover:shadow-xl transition-all duration-300 fade-in-up"
+                  style={{ animationDelay: `${idx * 0.1}s` }}
+                >
+                  <p className="text-yellow-400 mb-4 text-xl">★★★★★</p>
+                  <p className="text-slate-700 font-sans italic mb-6 leading-relaxed">
+                    "{testimonial.text}"
+                  </p>
+                  <div className="border-t border-purple-200 pt-4">
+                    <p className="text-purple-700 font-bold font-sans">{testimonial.author}</p>
+                    <p className="text-sm text-purple-600 font-sans">{testimonial.condition}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* PRICING SECTION */}
+        <section className="relative py-24 px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="font-sans text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-4">
+                Transparent Pricing
+              </h2>
+              <p className="text-slate-600 font-sans max-w-2xl mx-auto text-lg">
+                Flexible payment options and competitive rates
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+              {[
+                { 
+                  title: "Initial Consultation", 
+                  duration: "60 Minutes",
+                  items: ["Psychiatric assessment", "Medical history review", "Treatment plan development", "Free 15-minute follow-up"]
+                },
+                { 
+                  title: "Follow-Up Session", 
+                  duration: "30 Minutes",
+                  items: ["Medication management", "Progress assessment", "Treatment adjustments", "Ongoing support"]
+                },
+                { 
+                  title: "Therapy Session", 
+                  duration: "50 Minutes",
+                  items: ["Individual counseling", "Coping strategies", "Personalized approach", "Evidence-based care"]
+                },
+              ].map((service, idx) => (
+                <div
+                  key={idx}
+                  className="relative bg-gradient-to-br from-purple-50/80 to-purple-100/80 backdrop-blur-sm rounded-3xl p-8 border border-purple-200/50 hover:border-purple-300 hover:shadow-2xl transition-all duration-300 fade-in-up border-t-4 border-t-purple-400"
+                  style={{ animationDelay: `${idx * 0.1}s` }}
+                >
+                  <div className="text-2xl mb-2">📅</div>
+                  <h3 className="font-sans text-xl font-bold text-purple-700 mb-1">{service.title}</h3>
+                  <p className="text-purple-600 font-bold mb-6">{service.duration}</p>
+                  <ul className="space-y-3 mb-8">
+                    {service.items.map((item, i) => (
+                      <li key={i} className="flex items-start gap-3 text-slate-700 font-sans text-sm">
+                        <span className="text-purple-600 font-bold flex-shrink-0">✓</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+
+            <div className="bg-gradient-to-r from-purple-600/10 to-purple-400/10 border border-purple-200/50 rounded-3xl p-8 text-center">
+              <h3 className="font-sans font-bold text-purple-700 mb-4 text-lg">Payment Methods</h3>
+              <div className="flex flex-wrap justify-center gap-4">
+                <span className="bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-slate-700 border border-purple-200/50">💳 Credit Cards</span>
+                <span className="bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-slate-700 border border-purple-200/50">🏦 ACH Transfer</span>
+                <span className="bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-slate-700 border border-purple-200/50">💰 Cash</span>
+                <span className="bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-slate-700 border border-purple-200/50">���� Venmo</span>
+              </div>
+              <p className="text-slate-600 font-sans text-sm mt-6">Most major insurance plans accepted • Flexible payment plans available</p>
+            </div>
+          </div>
+        </section>
+
+        {/* CONTACT SECTION */}
+        <section id="contact" className="relative py-24 px-4 bg-gradient-to-b from-purple-50/30 to-transparent">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="font-sans text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-4">
+                Start Your Journey
+              </h2>
+              <p className="text-slate-600 font-sans max-w-2xl mx-auto text-lg">
+                Take the first step towards better mental health
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+              {/* Contact Form */}
+              <form className="fade-in-up bg-gradient-to-br from-purple-50/80 to-purple-100/80 backdrop-blur-sm rounded-3xl p-8 md:p-10 border border-purple-200/50 lg:order-1">
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-slate-500 font-satoshi mb-1">Phone</p>
-                      <a
-                        href="tel:817-966-3989"
-                        className="text-purple-600 font-semibold hover:text-deep-purple transition-colors text-lg"
-                      >
+                      <label className="block text-sm font-semibold text-slate-700 mb-2">First Name</label>
+                      <input
+                        type="text"
+                        placeholder="Your first name"
+                        className="w-full px-4 py-3 rounded-lg border border-purple-200/50 focus:border-purple-400 focus:outline-none transition-colors bg-white/60 placeholder:text-slate-400"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-slate-700 mb-2">Last Name</label>
+                      <input
+                        type="text"
+                        placeholder="Your last name"
+                        className="w-full px-4 py-3 rounded-lg border border-purple-200/50 focus:border-purple-400 focus:outline-none transition-colors bg-white/60 placeholder:text-slate-400"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Email Address</label>
+                    <input
+                      type="email"
+                      placeholder="your@email.com"
+                      className="w-full px-4 py-3 rounded-lg border border-purple-200/50 focus:border-purple-400 focus:outline-none transition-colors bg-white/60 placeholder:text-slate-400"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Phone Number</label>
+                    <input
+                      type="tel"
+                      placeholder="(XXX) XXX-XXXX"
+                      className="w-full px-4 py-3 rounded-lg border border-purple-200/50 focus:border-purple-400 focus:outline-none transition-colors bg-white/60 placeholder:text-slate-400"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Message</label>
+                    <textarea
+                      placeholder="How can we help you?"
+                      rows={4}
+                      className="w-full px-4 py-3 rounded-lg border border-purple-200/50 focus:border-purple-400 focus:outline-none transition-colors bg-white/60 placeholder:text-slate-400"
+                    />
+                  </div>
+
+                  <button type="submit" className="hero-btn w-full">
+                    <span>Book Consultation</span>
+                    <span>✉️</span>
+                  </button>
+                </div>
+              </form>
+
+              {/* Contact Info & Media */}
+              <div className="fade-in-up space-y-6">
+                <div className="relative rounded-3xl overflow-hidden shadow-2xl h-96">
+                  <Image
+                    src="https://images.pexels.com/photos/34833435/pexels-photo-34833435.jpeg"
+                    alt="Therapeutic environment and wellness space"
+                    fill
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-purple-800/20" />
+                </div>
+
+                <div className="bg-gradient-to-br from-purple-50/80 to-purple-100/80 backdrop-blur-sm rounded-3xl border border-purple-200/50 p-8">
+                  <h3 className="font-sans text-2xl font-bold text-purple-700 mb-6">Quick Contact</h3>
+
+                  <div className="space-y-6">
+                    <div>
+                      <p className="text-xs font-semibold text-purple-600 mb-2">📞 Phone</p>
+                      <a href="tel:817-966-3989" className="text-purple-700 font-bold hover:text-purple-600 transition-colors text-lg">
                         817-966-3989
                       </a>
                     </div>
+
                     <div>
-                      <p className="text-sm text-slate-500 font-satoshi mb-1">Email</p>
-                      <a
-                        href="mailto:GoretyDNP@gmail.com"
-                        className="text-purple-600 font-semibold hover:text-deep-purple transition-colors text-lg"
-                      >
+                      <p className="text-xs font-semibold text-purple-600 mb-2">📧 Email</p>
+                      <a href="mailto:GoretyDNP@gmail.com" className="text-purple-700 font-bold hover:text-purple-600 transition-colors text-lg">
                         GoretyDNP@gmail.com
                       </a>
                     </div>
+
                     <div>
-                      <p className="text-sm text-slate-500 font-satoshi mb-1">Office Location</p>
-                      <p className="text-slate-700 font-satoshi">2204 Joe Battle Blvd Suite D203B, El Paso, TX 79938</p>
+                      <p className="text-xs font-semibold text-purple-600 mb-2">📍 Office Location</p>
+                      <p className="text-slate-700 font-sans text-sm">
+                        2204 Joe Battle Blvd Suite D203B<br />
+                        El Paso, TX 79938
+                      </p>
                     </div>
+
                     <div>
-                      <p className="text-sm text-slate-500 font-satoshi mb-1">Office Hours</p>
-                      <p className="text-slate-700 font-satoshi">Monday - Friday: 9:00 AM - 5:00 PM</p>
+                      <p className="text-xs font-semibold text-purple-600 mb-2">🕐 Office Hours</p>
+                      <p className="text-slate-700 font-sans text-sm">
+                        Monday - Friday: 9:00 AM - 5:00 PM
+                      </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-gradient-to-r from-purple-600 to-deep-purple rounded-2xl p-6 text-white">
-                  <p className="font-playfair text-lg font-bold mb-2">We Respond Within 2 Hours</p>
-                  <p className="font-satoshi">Your message matters. We'll get back to you as soon as possible.</p>
+                <div className="bg-gradient-to-br from-purple-500 to-purple-700 rounded-3xl p-8 text-white">
+                  <p className="font-sans font-bold mb-2 text-lg">✓ We Respond Within 2 Hours</p>
+                  <p className="font-sans text-sm text-purple-100">
+                    Your message matters. We prioritize rapid response to all inquiries.
+                  </p>
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
 
-              {/* Booking Form */}
-              <form className="fade-in-up bg-white/70 backdrop-blur-sm rounded-2xl p-8 border border-lavender-200 space-y-6">
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">Full Name</label>
-                  <input
-                    type="text"
-                    placeholder="Your name"
-                    className="w-full px-4 py-3 rounded-lg border border-lavender-200 focus:border-purple-600 focus:outline-none transition-colors bg-white/50"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">Email Address</label>
-                  <input
-                    type="email"
-                    placeholder="your@email.com"
-                    className="w-full px-4 py-3 rounded-lg border border-lavender-200 focus:border-purple-600 focus:outline-none transition-colors bg-white/50"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">Phone Number</label>
-                  <input
-                    type="tel"
-                    placeholder="(XXX) XXX-XXXX"
-                    className="w-full px-4 py-3 rounded-lg border border-lavender-200 focus:border-purple-600 focus:outline-none transition-colors bg-white/50"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">Message</label>
-                  <textarea
-                    placeholder="Tell us how we can help..."
-                    rows={4}
-                    className="w-full px-4 py-3 rounded-lg border border-lavender-200 focus:border-purple-600 focus:outline-none transition-colors bg-white/50"
-                  />
-                </div>
-                <button type="submit" className="gradient-btn w-full">
-                  Schedule Consultation
-                </button>
-              </form>
+        {/* STAY CONNECTED SECTION */}
+        <section className="relative py-24 px-4">
+          <div className="max-w-6xl mx-auto text-center">
+            <h2 className="font-sans text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-4">
+              Stay Connected
+            </h2>
+            <p className="text-slate-600 font-sans max-w-2xl mx-auto text-lg mb-12">
+              Follow for mental health tips, resources, and community support
+            </p>
+
+            <div className="flex justify-center gap-4 mb-12">
+              {[
+                { icon: "f", label: "Facebook" },
+                { icon: "📷", label: "Instagram" },
+                { icon: "in", label: "LinkedIn" },
+                { icon: "𝕏", label: "Twitter" },
+              ].map((social, idx) => (
+                <a
+                  key={idx}
+                  href="#"
+                  className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white border border-purple-200/50 text-purple-600 hover:bg-purple-100/60 hover:scale-110 transition-all duration-300"
+                  title={social.label}
+                >
+                  <span className="text-xl font-bold">{social.icon}</span>
+                </a>
+              ))}
+            </div>
+
+            <div className="inline-block bg-gradient-to-br from-purple-50/80 to-purple-100/80 backdrop-blur-sm rounded-2xl border border-purple-200/50 px-8 py-4">
+              <p className="text-slate-700 font-sans">
+                <span className="text-lg">🌎</span> <span className="font-medium">Telehealth services</span> available across Texas
+              </p>
             </div>
           </div>
         </section>

@@ -13,7 +13,7 @@ const playfairDisplay = Playfair_Display({
 const satoshi = Satoshi({
   subsets: ["latin"],
   variable: "--font-satoshi",
-  weight: ["400", "500", "600"],
+  weight: ["400"],
 })
 
 export const metadata: Metadata = {
