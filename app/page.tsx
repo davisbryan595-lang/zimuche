@@ -143,17 +143,6 @@ export default function Home() {
             <span className="text-sm font-medium text-purple-700">Board Certified Professional</span>
           </div>
 
-          {/* Logo */}
-          <div className="mb-8 w-40 h-40 relative animate-fade-in">
-            <Image 
-              src="https://cdn.builder.io/api/v1/image/assets%2Fc70ebb3e5225486399c19406cd27bb43%2F8d9fe4b88ac049fb93fd853a5db6c03c?format=webp&width=800" 
-              alt="Zimuche Health Harmony Logo" 
-              width={160}
-              height={160}
-              className="w-full h-full object-contain drop-shadow-xl"
-            />
-          </div>
-
           {/* Main Heading with Gradient */}
           <h1 className="font-sans text-5xl md:text-7xl font-bold text-center mb-4 bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent animate-fade-in-up">
             Zimuche
@@ -497,7 +486,7 @@ export default function Home() {
                 <span className="bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-slate-700 border border-purple-200/50">💳 Credit Cards</span>
                 <span className="bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-slate-700 border border-purple-200/50">🏦 ACH Transfer</span>
                 <span className="bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-slate-700 border border-purple-200/50">💰 Cash</span>
-                <span className="bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-slate-700 border border-purple-200/50">���� Venmo</span>
+                <span className="bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-slate-700 border border-purple-200/50">📱 Venmo</span>
               </div>
               <p className="text-slate-600 font-sans text-sm mt-6">Most major insurance plans accepted • Flexible payment plans available</p>
             </div>
