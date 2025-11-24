@@ -204,10 +204,10 @@ export default function Home() {
         </section>
 
         {/* SERVICES SECTION */}
-        <section id="services" className="relative py-24 px-4">
-          <div className="max-w-6xl mx-auto">
+        <section id="services" className="relative py-16 sm:py-20 md:py-24 px-4 sm:px-6 md:px-8">
+          <div className="max-w-6xl mx-auto w-full">
             {/* Services Header with Image */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 md:gap-12 items-center mb-12 sm:mb-16">
               <div className="fade-in-up order-2 lg:order-1">
                 <div className="relative rounded-3xl overflow-hidden shadow-2xl h-80 md:h-96">
                   <Image
@@ -229,7 +229,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
               {[
                 { title: "Psychiatric Evaluation", description: "Thorough assessment and diagnosis", icon: "🧠" },
                 { title: "Medication Management", description: "Expert prescription monitoring", icon: "💊" },
@@ -252,12 +252,12 @@ export default function Home() {
               ))}
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
-              <a href="#contact" className="hero-btn">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mt-10 sm:mt-12">
+              <a href="#contact" className="hero-btn text-sm sm:text-base">
                 <span>Schedule a Service</span>
                 <span>→</span>
               </a>
-              <a href="#about" className="hero-btn-secondary">
+              <a href="#about" className="hero-btn-secondary text-sm sm:text-base">
                 Learn More About Dr. Gorety
               </a>
             </div>
