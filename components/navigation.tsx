@@ -8,23 +8,20 @@ export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <nav className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md border-b border-purple-200/30 z-40">
+    <nav className="fixed top-0 left-0 right-0 bg-lavender-100 backdrop-blur-md border-b border-purple-200/30 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
-          {/* Logo & Brand */}
+        <div className="flex justify-between items-center h-24">
+          {/* Logo - Enlarged */}
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <div className="w-10 h-10 relative flex-shrink-0">
+            <div className="w-20 h-20 relative flex-shrink-0">
               <Image
                 src="https://cdn.builder.io/api/v1/image/assets%2Fc70ebb3e5225486399c19406cd27bb43%2F8d9fe4b88ac049fb93fd853a5db6c03c?format=webp&width=800"
                 alt="Zimuche Logo"
-                width={40}
-                height={40}
+                width={80}
+                height={80}
                 priority
               />
             </div>
-            <span className="font-sans text-base font-bold text-purple-700 hidden sm:inline">
-              Mariagorety Nwiloh, PMHNP-BC
-            </span>
           </Link>
 
           {/* Desktop Menu */}
