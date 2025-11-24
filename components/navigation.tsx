@@ -15,7 +15,7 @@ export default function Navigation() {
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <div className="w-20 h-20 relative flex-shrink-0">
               <Image
-                src="https://cdn.builder.io/api/v1/image/assets%2Fc70ebb3e5225486399c19406cd27bb43%2F8d9fe4b88ac049fb93fd853a5db6c03c?format=webp&width=800"
+                src="/colored-logo-removebg-preview.png"
                 alt="Zimuche Logo"
                 width={80}
                 height={80}
