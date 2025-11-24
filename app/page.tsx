@@ -217,13 +217,27 @@ export default function Home() {
         {/* SERVICES SECTION */}
         <section id="services" className="relative py-24 px-4">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="font-sans text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-4">
-                Comprehensive Mental Health Services
-              </h2>
-              <p className="text-slate-600 font-sans max-w-2xl mx-auto text-lg">
-                Expert care tailored to your unique needs
-              </p>
+            {/* Services Header with Image */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+              <div className="fade-in-up order-2 lg:order-1">
+                <div className="relative rounded-3xl overflow-hidden shadow-2xl h-80 md:h-96">
+                  <Image
+                    src="https://images.pexels.com/photos/5407206/pexels-photo-5407206.jpeg"
+                    alt="Professional therapy and counseling services"
+                    fill
+                    className="object-cover hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+              </div>
+
+              <div className="fade-in-up order-1 lg:order-2">
+                <h2 className="font-sans text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent mb-4">
+                  Comprehensive Mental Health Services
+                </h2>
+                <p className="text-slate-600 font-sans max-w-2xl text-lg">
+                  Expert care tailored to your unique needs with professional expertise and compassionate approach
+                </p>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
