@@ -497,7 +497,7 @@ export default function Home() {
                 <span className="bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-slate-700 border border-purple-200/50">💳 Credit Cards</span>
                 <span className="bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-slate-700 border border-purple-200/50">🏦 ACH Transfer</span>
                 <span className="bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-slate-700 border border-purple-200/50">💰 Cash</span>
-                <span className="bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-slate-700 border border-purple-200/50">📱 Venmo</span>
+                <span className="bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-slate-700 border border-purple-200/50">���� Venmo</span>
               </div>
               <p className="text-slate-600 font-sans text-sm mt-6">Most major insurance plans accepted • Flexible payment plans available</p>
             </div>
@@ -573,11 +573,21 @@ export default function Home() {
                 </div>
               </form>
 
-              {/* Contact Info */}
+              {/* Contact Info & Media */}
               <div className="fade-in-up space-y-6">
+                <div className="relative rounded-3xl overflow-hidden shadow-2xl h-96">
+                  <Image
+                    src="https://images.pexels.com/photos/34833435/pexels-photo-34833435.jpeg"
+                    alt="Therapeutic environment and wellness space"
+                    fill
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-purple-800/20" />
+                </div>
+
                 <div className="bg-gradient-to-br from-purple-50/80 to-purple-100/80 backdrop-blur-sm rounded-3xl border border-purple-200/50 p-8">
                   <h3 className="font-sans text-2xl font-bold text-purple-700 mb-6">Quick Contact</h3>
-                  
+
                   <div className="space-y-6">
                     <div>
                       <p className="text-xs font-semibold text-purple-600 mb-2">📞 Phone</p>
