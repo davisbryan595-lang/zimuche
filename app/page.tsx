@@ -5,61 +5,13 @@ import Image from "next/image"
 import Navigation from "@/components/navigation"
 import Footer from "@/components/footer"
 
-interface Particle {
-  id: number
-  x: number
-  y: number
-  size: number
-  vx: number
-  vy: number
-}
-
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true)
-  const [particles, setParticles] = useState<Particle[]>([])
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 })
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Initialize particles
   useEffect(() => {
-    const newParticles: Particle[] = Array.from({ length: 15 }).map((_, i) => ({
-      id: i,
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
-      size: Math.random() * 150 + 50,
-      vx: (Math.random() - 0.5) * 0.5,
-      vy: (Math.random() - 0.5) * 0.5,
-    }))
-    setParticles(newParticles)
     setIsLoading(false)
-  }, [])
-
-  // Animate particles
-  useEffect(() => {
-    const animationInterval = setInterval(() => {
-      setParticles((prev) =>
-        prev.map((particle) => {
-          let newX = particle.x + particle.vx
-          let newY = particle.y + particle.vy
-          let newVx = particle.vx
-          let newVy = particle.vy
-
-          // Bounce off edges
-          if (newX < 0 || newX > window.innerWidth) {
-            newVx = -newVx
-            newX = Math.max(0, Math.min(window.innerWidth, newX))
-          }
-          if (newY < 0 || newY > window.innerHeight) {
-            newVy = -newVy
-            newY = Math.max(0, Math.min(window.innerHeight, newY))
-          }
-
-          return { ...particle, x: newX, y: newY, vx: newVx, vy: newVy }
-        })
-      )
-    }, 30)
-
-    return () => clearInterval(animationInterval)
   }, [])
 
   // Track cursor movement
@@ -76,7 +28,7 @@ export default function Home() {
     <>
       <Navigation />
 
-      {/* Animated Background with Decorative Blobs and Particles */}
+      {/* Animated Background with Decorative Blobs */}
       <div ref={containerRef} className="fixed inset-0 -z-10 overflow-hidden bg-white">
         {/* Large decorative gradient blob - top right */}
         <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-gradient-to-br from-purple-100 via-purple-50 to-transparent opacity-60 blur-3xl" />
