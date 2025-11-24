@@ -516,9 +516,9 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
               {/* Contact Form */}
-              <form className="fade-in-up bg-gradient-to-br from-purple-50/80 to-purple-100/80 backdrop-blur-sm rounded-3xl p-8 md:p-10 border border-purple-200/50">
+              <form className="fade-in-up bg-gradient-to-br from-purple-50/80 to-purple-100/80 backdrop-blur-sm rounded-3xl p-8 md:p-10 border border-purple-200/50 lg:order-1">
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
